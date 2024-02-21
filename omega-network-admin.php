@@ -1,12 +1,27 @@
 <?php
 /**
  *  Plugin Name: OMEGA Network Admin
+ *	Plugin URI: https://omegabenefits.net
  *  Description: For Multi-Site Networks only! Organizes site listings for easier management
  *  Version: 1.0.0
- *  Author: somatic
- *  License: GPLv2
+ *  Author: Omega Benefits
+ *	Author URI: https://omegabenefits.net
+ *  License: GPL-2.0+
  *	Network: true
  */
+
+
+ /**
+  * 3rd-party class for our self-hosted updates
+  */
+ require_once plugin_dir_path( __FILE__ ) . "plugin-update-checker/plugin-update-checker.php";
+ use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
+ $MyUpdateChecker = PucFactory::buildUpdateChecker(
+	 "http://dashboard.hrbenefits.net/wp-update-server/?action=get_metadata&slug=omega-network-admin", //Metadata URL.
+	 __FILE__, //Full path to the main plugin file.
+	 "omega-network-admin" //Plugin slug. Usually it's the same as the name of the directory.
+ );
+
 
 wp_enqueue_style( 'ona-style', plugin_dir_url( __FILE__ ) . 'ona.css', array(), "1.0", 'all' );
 
