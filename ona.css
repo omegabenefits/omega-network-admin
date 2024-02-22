@@ -3,14 +3,13 @@
 	https://omegams10.local/wp-content/plugins/omega-network-admin/ona.css?* */
 
 .sites.fixed .column-omega_topbar_enable { width:50px; }
+.sites.fixed .column-omega_plugin { width:40px; }
 .sites.fixed .column-omega_system_version { width:50px; }
 .sites.fixed .column-omega_last_export { width:160px; }
 .sites.fixed .column-users { width:40px; }
 .sites.fixed .column-lastupdated { width:120px; }
 
-.sites.fixed td.column-omega_system_version {
-	font-weight: 700;
-}
+
 .sites.fixed td.column-omega_clientname {
 	font-weight: 700;
 }

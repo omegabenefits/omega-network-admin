@@ -39,8 +39,9 @@ function omeganetwork_add_sites_column_heading( $columns ) {
 		'blogname' 				=> 'Staging Domain',
 		'omega_clientname' 		=> "Client",
 		'omega_public_domain'	=> 'Public Domain',
+		'omega_plugin'			=> "Plugin",
+		'omega_system_version' 	=> 'System',
 		'omega_last_export'		=> 'Last Static Export',
-		'omega_system_version' 	=> 'Version',
 		'omega_topbar_enable'	=> "Topbar",
 
 		'lastupdated'			=> 'Last Updated',
@@ -101,6 +102,15 @@ function omeganetwork_columns_content( $column_name, $blog_id ) {
 			break;
 			case "omega_last_export":
 				$content = ( empty( $option ) ) ? "-" : human_time_diff( strtotime( date( "Y-m-d H:i:s" ) ) , strtotime( $option ) ) . " ago <br />". $option;
+			break;
+			case "omega_plugin":
+				switch_to_blog( $blog_id );
+				if ( in_array( "omega-system/omega-system.php", (array) get_option( 'active_plugins', array() ) ) ) {
+					$content = '<span class="dashicons dashicons-superhero-alt"></span>';
+				} else {
+					$content = "-";	
+				}
+				restore_current_blog();
 			break;
 			default:
 				$content = "-";
