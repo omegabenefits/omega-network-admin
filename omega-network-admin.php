@@ -88,7 +88,7 @@ function omeganetwork_columns_content( $column_name, $blog_id ) {
 		$content = "";
 		switch ( $column_name ) {
 			case "omega_system_version":
-				$content = ( empty( $option ) ) ? "-" : $option;
+				$content = ( empty( $option ) ) ? "<span style='color:#bbb;'>1.0</span>" : $option;
 			break;
 			case "omega_public_domain":
 				$content = ( empty( $option ) ) ? "-" : "<a href='https://{$option}' target='_blank'>".$option."</a>";
