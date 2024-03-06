@@ -1,6 +1,5 @@
 /* @override 
-	http://omegams10.local/wp-content/plugins/omega-network-admin/ona.css?*
-	https://omegams10.local/wp-content/plugins/omega-network-admin/ona.css?* */
+	https://omegastaging.local/wp-content/plugins/omega-network-admin/ona.css?* */
 
 .sites.fixed .column-omega_topbar_enable { width:50px; }
 .sites.fixed .column-omega_plugin { width:40px; }
@@ -12,4 +11,88 @@
 
 .sites.fixed td.column-omega_clientname {
 	font-weight: 700;
+}
+
+/* needed to remove the right border */
+.my-sites.striped li:after{content:none}
+
+#myblogs ul.my-sites {
+	display: flex;
+	flex-flow: row wrap;
+	gap: 1px;
+}
+#myblogs .my-sites img {
+	display: block;
+	width: 24px;
+	height: 24px;
+}
+#myblogs .my-sites .icon {
+	position: absolute;
+	right: 20px;
+	top: 20px;
+}
+
+#myblogs .my-sites .version {
+	color: #aaa;
+	margin: 0;
+	position: absolute;
+	right: 20px;
+
+}
+
+#myblogs ul.my-sites li {
+	float: none;
+	padding: 20px;
+	width: 260px;
+	background-color: #fff;
+	display: block;
+	line-height: 14px;
+}
+#myblogs .my-sites li:hover {
+	background: #e2eff9;
+	transition: background-color 0.2s ease;
+}
+
+#myblogs ul.my-sites li h3 {
+	line-height: 1.1em;
+	margin-top: 0;
+	margin-right: 30px;
+	white-space: nowrap;
+	overflow: hidden;
+}
+#myblogs .lastexport {
+	margin-bottom: 0;
+}
+#myblogs .lastexport .label {
+	display: block;
+	text-transform: uppercase;
+	font-size: 10px;
+	font-weight: 700;
+	color: #6ea5d2;
+}
+
+#myblogs .my-sites .rawtime {
+	color: #bbb;
+}
+
+.my-sites-actions {
+	display: flex;
+	flex-flow: column wrap;
+}
+.my-sites-actions a {
+	font-weight: 700;
+	line-height: 20px;
+	background: #e5e5e5;
+	padding: 5px;
+	border-radius: 5px;
+	margin-bottom: 5px;
+	text-transform: uppercase;
+}
+.my-sites-actions a:hover {
+	background-color: #2170b1;
+	color: #fff;
+}
+.my-sites-actions .dashicons {
+	margin-right: 3px;
+	transition: none;
 }

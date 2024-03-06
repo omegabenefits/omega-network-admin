@@ -3,7 +3,7 @@
  *  Plugin Name: OMEGA Network Admin
  *	Plugin URI: https://omegabenefits.net
  *  Description: For Multi-Site Networks only! Organizes site listings for easier management
- *  Version: 1.0.1
+ *  Version: 1.1
  *  Author: Omega Benefits
  *	Author URI: https://omegabenefits.net
  *  License: GPL-2.0+
@@ -147,3 +147,89 @@ function omeganetwork_columns_content( $column_name, $blog_id ) {
 	}
 }
 add_action( 'manage_sites_custom_column', 'omeganetwork_columns_content', 10, 2 );
+
+
+function ona_sort_my_sites($blogs) {
+	$fsort = function($a, $b) { 
+		return strcasecmp($a->blogname,$b->blogname);
+	};
+	uasort($blogs, $fsort);
+	return $blogs;
+}
+add_filter('get_blogs_of_user','ona_sort_my_sites');
+
+
+// add_action( 'admin_bar_menu' , 'ona_admin_bar_menu' );
+function ona_admin_bar_menu() {
+	global $wp_admin_bar;
+	
+	$blog_names = array();
+	$sites = $wp_admin_bar->user->blogs;
+	foreach( $sites as $site_id=>$site ) {
+		$blog_names[$site_id] = strtoupper( $site->blogname );
+	}
+	
+	// Remove main blog from list...we want that to show at the top
+	unset( $blog_names[1] );
+	
+	// Order by name
+	asort( $blog_names );
+	
+	// Create new array
+	$wp_admin_bar->user->blogs = array();
+	
+	// Add main blog back in to list
+	if($sites[1]){
+		$wp_admin_bar->user->blogs[1] = $sites[1];
+	}
+	
+	// Add others back in alphabetically
+	foreach( $blog_names as $site_id=>$name ) {
+		$wp_admin_bar->user->blogs[$site_id] = $sites[$site_id];
+	}
+} 
+
+add_filter('myblogs_blog_actions', 'ona_site_actions', 10, 2 );
+function ona_site_actions($actions, $user_blog) {
+	// +"userblog_id": 31
+	//   +"blogname": "West Coast University"
+	//   +"domain": "acc-wcu.omegastaging.local"
+	//   +"path": "/"
+	//   +"site_id": 1
+	//   +"siteurl": "https://acc-wcu.omegastaging.local"
+	//   +"archived": "0"
+	//   +"mature": "0"
+	//   +"spam": "0"
+	//   +"deleted": "0"
+	$publicdomain = get_blog_option( $user_blog->userblog_id, 'omega_public_domain' );
+	
+	// ray($actions, $user_blog);
+	$new_actions = "";
+	$new_actions .= "<a href='".$user_blog->siteurl."/wp-admin/'><span class='dashicons dashicons-admin-settings'></span>Dashboard</a>";
+	$new_actions .= "<a href='".$user_blog->siteurl."'><span class='dashicons dashicons-welcome-view-site'></span>Staging</a>";
+	$new_actions .= "<a href='https://".$publicdomain."' target='_blank'><span class='dashicons dashicons-admin-site-alt3'></span>Public</a>";
+	return $new_actions;
+}
+
+// renders HTML output below each site's action links
+add_filter( 'myblogs_options', 'ona_site_meta', 10, 2);
+function ona_site_meta( $settings_html, $blog_obj ) {
+	// only do for site boxes, not the global context
+	if ( is_object( $blog_obj ) ) {
+		$html = "";
+		$html .= "<div class='icon'><img src='".get_site_icon_url($blog_obj->userblog_id)."'/></div>";
+		
+		$version = get_blog_option( $blog_obj->userblog_id, 'omega_system_version' );
+		$html .= "<p class='version'>v";
+		$html .= ( empty( $version ) ) ? "1.0" : $version;
+		$html .= "</p>";
+		
+		$lastexport = get_blog_option( $blog_obj->userblog_id, 'omega_last_export' );
+		$html .= "<p class='lastexport'>";
+		$html .= "<span class='label'>Last Static Export</span>";
+		$html .= ( empty( $lastexport ) ) ? "- <br /><br />" : human_time_diff( strtotime( date( "Y-m-d H:i:s" ) ) , strtotime( $lastexport ) ) . " ago <br /><span class='rawtime'>". $lastexport. "</span>";
+		$html .= "</p>";
+		
+		return $html;
+	}
+}
