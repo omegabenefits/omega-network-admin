@@ -3,7 +3,7 @@
  *  Plugin Name: OMEGA Network Admin
  *	Plugin URI: https://omegabenefits.net
  *  Description: For Multi-Site Networks only! Organizes site listings for easier management
- *  Version: 1.1
+ *  Version: 1.1.1
  *  Author: Omega Benefits
  *	Author URI: https://omegabenefits.net
  *  License: GPL-2.0+
@@ -23,7 +23,7 @@
  );
 
 
-wp_enqueue_style( 'ona-style', plugin_dir_url( __FILE__ ) . 'ona.css', array(), "1.0.1", 'all' );
+wp_enqueue_style( 'ona-style', plugin_dir_url( __FILE__ ) . 'ona.css', array(), "1.1.1", 'all' );
 
 
 /**
@@ -219,10 +219,15 @@ function ona_site_meta( $settings_html, $blog_obj ) {
 		$html = "";
 		$html .= "<div class='icon'><img src='".get_site_icon_url($blog_obj->userblog_id)."'/></div>";
 		
+
+		
 		$version = get_blog_option( $blog_obj->userblog_id, 'omega_system_version' );
 		$html .= "<p class='version'>v";
 		$html .= ( empty( $version ) ) ? "1.0" : $version;
 		$html .= "</p>";
+		if ( get_blog_option( $blog_obj->userblog_id, 'omega_topbar_enable' ) ) {
+			$html .= "<div class='dashicons dashicons-flag'></div>";
+		}
 		
 		$lastexport = get_blog_option( $blog_obj->userblog_id, 'omega_last_export' );
 		$html .= "<p class='lastexport'>";
