@@ -55,7 +55,8 @@
 	background: #fcf6d9;
 }
 
-#myblogs .my-sites li:hover {
+#myblogs .my-sites li:hover,
+#myblogs ul.my-sites li:has(.dashicons-flag):hover {
 	background: #e2eff9;
 	transition: background-color 0.2s ease;
 }
