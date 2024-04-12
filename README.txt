@@ -4,7 +4,7 @@ Donate link: https://omegabenefits.net
 Tags: admin
 Requires at least: 6.0
 Tested up to: 6.4
-Stable tag: 1.1.1
+Stable tag: 1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,9 +12,13 @@ For Multi-Site Networks only! Organizes site listings for easier management
 
 == Description ==
 
-https://dashboard.hrbenefits.net/omega-template-system/
+https://omegabenefits.net/omega-template-system/
 
 == Changelog ==
+
+= 1.2 =
+* show assigned project manager
+* updated plugin-update-checker URL
 
 = 1.1.1 =
 * highlight flag and color for site tiles that have the topbar enabled (editing mode)

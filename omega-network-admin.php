@@ -3,7 +3,7 @@
  *  Plugin Name: OMEGA Network Admin
  *	Plugin URI: https://omegabenefits.net
  *  Description: For Multi-Site Networks only! Organizes site listings for easier management
- *  Version: 1.1.1
+ *  Version: 1.2
  *  Author: Omega Benefits
  *	Author URI: https://omegabenefits.net
  *  License: GPL-2.0+
@@ -17,7 +17,7 @@
  require_once plugin_dir_path( __FILE__ ) . "plugin-update-checker/plugin-update-checker.php";
  use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
  $MyUpdateChecker = PucFactory::buildUpdateChecker(
-	 "http://dashboard.hrbenefits.net/wp-update-server/?action=get_metadata&slug=omega-network-admin", //Metadata URL.
+	 "https://omegabenefits.net/wp-update-server/?action=get_metadata&slug=omega-network-admin", //Metadata URL.
 	 __FILE__, //Full path to the main plugin file.
 	 "omega-network-admin" //Plugin slug. Usually it's the same as the name of the directory.
  );
@@ -39,7 +39,8 @@ function omeganetwork_add_sites_column_heading( $columns ) {
 		'blogname' 				=> 'Staging Domain',
 		'omega_clientname' 		=> "Client",
 		'omega_public_domain'	=> 'Public Domain',
-		'omega_plugin'			=> "Plugin",
+		// 'omega_plugin'			=> "Plugin",
+		'omega_projectmanager' 	=> 'PM',
 		'omega_system_version' 	=> 'System',
 		'omega_last_export'		=> 'Last Static Export',
 		'omega_topbar_enable'	=> "Topbar",
@@ -102,6 +103,11 @@ function omeganetwork_columns_content( $column_name, $blog_id ) {
 			break;
 			case "omega_last_export":
 				$content = ( empty( $option ) ) ? "-" : human_time_diff( strtotime( date( "Y-m-d H:i:s" ) ) , strtotime( $option ) ) . " ago <br />". $option;
+			break;
+			case "omega_projectmanager":
+				$pm = get_blog_option( $blog_id, 'omega_projectmanager');
+				$user = get_user_by( 'login', $pm );
+				$content = ( empty( $pm ) ) ? "-" : $user->display_name;
 			break;
 			case "omega_plugin":
 				switch_to_blog( $blog_id );
@@ -228,7 +234,12 @@ function ona_site_meta( $settings_html, $blog_obj ) {
 		if ( get_blog_option( $blog_obj->userblog_id, 'omega_topbar_enable' ) ) {
 			$html .= "<div class='dashicons dashicons-flag'></div>";
 		}
-		
+		$pm = get_blog_option( $blog_obj->userblog_id, 'omega_projectmanager' );
+		$user = get_user_by( 'login', $pm );
+		$html .= "<p class='projectmanager'>";
+		$html .= "<span class='dashicons dashicons-admin-users'></span>";
+		$html .= ( empty( $pm ) ) ? "?" : $user->display_name ;
+		$html .= "</p>";
 		$lastexport = get_blog_option( $blog_obj->userblog_id, 'omega_last_export' );
 		$html .= "<p class='lastexport'>";
 		$html .= "<span class='label'>Last Static Export</span>";

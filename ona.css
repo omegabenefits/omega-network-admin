@@ -3,6 +3,7 @@
 
 .sites.fixed .column-omega_topbar_enable { width:50px; }
 .sites.fixed .column-omega_plugin { width:40px; }
+.sites.fixed .column-omega_projectmanager { width:100px; }
 .sites.fixed .column-omega_system_version { width:50px; }
 .sites.fixed .column-omega_last_export { width:160px; }
 .sites.fixed .column-users { width:40px; }
@@ -13,8 +14,13 @@
 	font-weight: 700;
 }
 
+/* hide the primary site selector */
+#myblogs .form-table tbody {
+	display: none;
+}
+
 /* needed to remove the right border */
-.my-sites.striped li:after{content:none}
+#myblogs .my-sites.striped li:after{content:none}
 
 #myblogs ul.my-sites {
 	display: flex;
@@ -68,7 +74,19 @@
 	white-space: nowrap;
 	overflow: hidden;
 }
+
+#myblogs .projectmanager {
+	font-size: 12px;
+	font-weight: 700;
+	margin: 0;
+	color: #af7e66;
+}
+#myblogs .projectmanager .dashicons {
+	color: #cdcdcd;
+	margin-right: 3px;
+}
 #myblogs .lastexport {
+	margin-top: 6px;
 	margin-bottom: 0;
 }
 #myblogs .lastexport .label {
@@ -86,6 +104,7 @@
 .my-sites-actions {
 	display: flex;
 	flex-flow: column wrap;
+	margin-bottom: 6px;
 }
 .my-sites-actions a {
 	font-weight: 700;
