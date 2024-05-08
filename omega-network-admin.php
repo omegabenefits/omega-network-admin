@@ -3,7 +3,7 @@
  *  Plugin Name: OMEGA Network Admin
  *	Plugin URI: https://omegabenefits.net
  *  Description: For Multi-Site Networks only! Organizes site listings for easier management
- *  Version: 1.2
+ *  Version: 1.2.1
  *  Author: Omega Benefits
  *	Author URI: https://omegabenefits.net
  *  License: GPL-2.0+
@@ -23,7 +23,7 @@
  );
 
 
-wp_enqueue_style( 'ona-style', plugin_dir_url( __FILE__ ) . 'ona.css', array(), "1.1.1", 'all' );
+wp_enqueue_style( 'ona-style', plugin_dir_url( __FILE__ ) . 'ona.css', array(), "1.2.1", 'all' );
 
 
 /**
@@ -107,7 +107,7 @@ function omeganetwork_columns_content( $column_name, $blog_id ) {
 			case "omega_projectmanager":
 				$pm = get_blog_option( $blog_id, 'omega_projectmanager');
 				$user = get_user_by( 'login', $pm );
-				$content = ( empty( $pm ) ) ? "-" : $user->display_name;
+				$content = ( empty( $pm ) || empty( $user ) ) ? "-" : $user->display_name;
 			break;
 			case "omega_plugin":
 				switch_to_blog( $blog_id );
@@ -238,7 +238,7 @@ function ona_site_meta( $settings_html, $blog_obj ) {
 		$user = get_user_by( 'login', $pm );
 		$html .= "<p class='projectmanager'>";
 		$html .= "<span class='dashicons dashicons-admin-users'></span>";
-		$html .= ( empty( $pm ) ) ? "?" : $user->display_name ;
+		$html .= ( empty( $pm ) || empty( $user ) ) ? "?" : $user->display_name ;
 		$html .= "</p>";
 		$lastexport = get_blog_option( $blog_obj->userblog_id, 'omega_last_export' );
 		$html .= "<p class='lastexport'>";

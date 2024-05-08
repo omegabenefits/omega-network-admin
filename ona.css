@@ -37,7 +37,7 @@
 	right: 20px;
 	top: 20px;
 }
-#myblogs .my-sites .version {
+#myblogs ul.my-sites .version {
 	color: #aaa;
 	margin: 0;
 	position: absolute;
@@ -122,4 +122,30 @@
 .my-sites-actions .dashicons {
 	margin-right: 3px;
 	transition: none;
+}
+@media screen and (width <= 480px) {
+	#myblogs ul.my-sites li {
+		width: 160px;
+		padding: 12px;
+	}
+	#myblogs ul.my-sites .version {
+		position: relative;
+		float: right;
+		right: 5px;
+	}
+	#myblogs .my-sites .icon {
+		position: relative;
+		float: left;
+		top: 0;
+		right: 0;
+	}
+	#myblogs .projectmanager {
+		clear: both;
+	}
+	#myblogs .my-sites .dashicons-flag {
+		position: relative;
+		float: right;
+		right: 10px;
+		top: 0;
+	}
 }
