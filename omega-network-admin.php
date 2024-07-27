@@ -223,9 +223,7 @@ function ona_site_meta( $settings_html, $blog_obj ) {
 	// only do for site boxes, not the global context
 	if ( is_object( $blog_obj ) ) {
 		$html = "";
-		$html .= "<div class='icon'><img src='".get_site_icon_url($blog_obj->userblog_id)."'/></div>";
-		
-
+		$html .= "<div class='icon'><img src='".get_site_icon_url( 32, '', $blog_obj->userblog_id )."'/></div>";
 		
 		$version = get_blog_option( $blog_obj->userblog_id, 'omega_system_version' );
 		$html .= "<p class='version'>v";
