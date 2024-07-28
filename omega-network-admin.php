@@ -261,3 +261,15 @@ function ona_site_meta( $settings_html, $blog_obj ) {
 		return $html;
 	}
 }
+
+add_filter ( 'wpmdb_tables', 'ona_filter_migrate_tables', 99, 2);
+function ona_filter_migrate_tables( $tables, $scope ) {
+	foreach ( $tables as $key => $val ) {
+		if ( str_contains( $val, 'simply_static_pages' ) ) {
+			unset( $tables[$key] );
+			ray("migration excluded > ".$val);
+		}
+	}
+	// ray(array_values($tables))->hide();
+	return array_values($tables);
+}
