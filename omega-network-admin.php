@@ -3,7 +3,7 @@
  *  Plugin Name: OMEGA Network Admin
  *	Plugin URI: https://omegabenefits.net
  *  Description: For Multi-Site Networks only! Organizes site listings for easier management
- *  Version: 1.2.1
+ *  Version: 1.2.2
  *  Author: Omega Benefits
  *	Author URI: https://omegabenefits.net
  *  License: GPL-2.0+
@@ -43,8 +43,8 @@ function omeganetwork_add_sites_column_heading( $columns ) {
 		'omega_projectmanager' 	=> 'PM',
 		'omega_system_version' 	=> 'System',
 		'omega_last_export'		=> 'Last Static Export',
-		'omega_topbar_enable'	=> "Topbar",
-
+		'omega_topbar_enable'	=> "Preview",
+		'omega_multi_lang'	    => "Lang",
 		'lastupdated'			=> 'Last Updated',
 		// 'blog_id'				=> 'Subsite ID',
 		// 'public'				=> 'Public',
@@ -100,6 +100,9 @@ function omeganetwork_columns_content( $column_name, $blog_id ) {
 			break;
 			case "omega_topbar_enable":
 				$content = ( empty( $option ) ) ? '-' : '<span class="dashicons dashicons-flag"></span>';
+			break;
+			case "omega_multi_lang":
+				$content = ( empty( $option ) ) ? '-' : '<span class="dashicons dashicons-translation"></span>';
 			break;
 			case "omega_last_export":
 				$content = ( empty( $option ) ) ? "-" : human_time_diff( strtotime( date( "Y-m-d H:i:s" ) ) , strtotime( $option ) ) . " ago <br />". $option;
@@ -217,6 +220,7 @@ function ona_site_actions($actions, $user_blog) {
 	return $new_actions;
 }
 
+// My Sites Tiles extras
 // renders HTML output below each site's action links
 add_filter( 'myblogs_options', 'ona_site_meta', 10, 2);
 function ona_site_meta( $settings_html, $blog_obj ) {
@@ -229,16 +233,26 @@ function ona_site_meta( $settings_html, $blog_obj ) {
 		$html .= "<p class='version'>v";
 		$html .= ( empty( $version ) ) ? "1.0" : $version;
 		$html .= "</p>";
+		
+		// topbar preview mode
 		if ( get_blog_option( $blog_obj->userblog_id, 'omega_topbar_enable' ) ) {
-			$html .= "<div class='dashicons dashicons-flag'></div>";
+			$html .= "<span class='preview dashicons dashicons-flag'></span>";
 		}
+		// show icon if multiple languages
+		if ( get_blog_option( $blog_obj->userblog_id, 'omega_multi_lang' ) ) {
+			$html .= "<span class='lang dashicons dashicons-translation'></span>";
+		}
+
 		$pm = get_blog_option( $blog_obj->userblog_id, 'omega_projectmanager' );
 		$user = get_user_by( 'login', $pm );
+		
 		$html .= "<p class='projectmanager'>";
 		$html .= "<span class='dashicons dashicons-admin-users'></span>";
 		$html .= ( empty( $pm ) || empty( $user ) ) ? "?" : $user->display_name ;
 		$html .= "</p>";
+		
 		$lastexport = get_blog_option( $blog_obj->userblog_id, 'omega_last_export' );
+		
 		$html .= "<p class='lastexport'>";
 		$html .= "<span class='label'>Last Static Export</span>";
 		$html .= ( empty( $lastexport ) ) ? "- <br /><br />" : human_time_diff( strtotime( date( "Y-m-d H:i:s" ) ) , strtotime( $lastexport ) ) . " ago <br /><span class='rawtime'>". $lastexport. "</span>";

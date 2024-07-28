@@ -1,7 +1,8 @@
 /* @override 
 	https://omegastaging.local/wp-content/plugins/omega-network-admin/ona.css?* */
 
-.sites.fixed .column-omega_topbar_enable { width:50px; }
+.sites.fixed .column-omega_topbar_enable { width:52px; }
+.sites.fixed .column-omega_multi_lang { width:36px; }
 .sites.fixed .column-omega_plugin { width:40px; }
 .sites.fixed .column-omega_projectmanager { width:100px; }
 .sites.fixed .column-omega_system_version { width:50px; }
@@ -43,10 +44,17 @@
 	position: absolute;
 	right: 20px;
 }
-#myblogs .my-sites .dashicons-flag {
+#myblogs .my-sites .preview {
 	position: absolute;
 	right: 20px;
 	top: 200px;
+	color: #c4a616;
+}
+#myblogs .my-sites .lang {
+	position: absolute;
+	right: 20px;
+	top: 226px;
+	color: #17ae57;
 }
 
 #myblogs ul.my-sites li {
@@ -57,12 +65,17 @@
 	display: block;
 	line-height: 14px;
 }
-#myblogs ul.my-sites li:has(.dashicons-flag) {
+
+#myblogs ul.my-sites li:has(.lang) {
+	background: #e8fbf0;
+}
+#myblogs ul.my-sites li:has(.preview) {
 	background: #fcf6d9;
 }
 
 #myblogs .my-sites li:hover,
-#myblogs ul.my-sites li:has(.dashicons-flag):hover {
+#myblogs ul.my-sites li:has(.lang):hover,
+#myblogs ul.my-sites li:has(.preview):hover {
 	background: #e2eff9;
 	transition: background-color 0.2s ease;
 }
