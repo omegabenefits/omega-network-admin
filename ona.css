@@ -88,16 +88,25 @@
 	overflow: hidden;
 }
 
-#myblogs .projectmanager {
+#myblogs .projectmanager,
+#myblogs .clientid {
 	font-size: 12px;
 	font-weight: 700;
+	line-height: 20px;
 	margin: 0;
-	color: #af7e66;
+	color: #b06363;
 }
-#myblogs .projectmanager .dashicons {
+#myblogs .projectmanager .dashicons,
+#myblogs .clientid .dashicons {
 	color: #cdcdcd;
 	margin-right: 3px;
 }
+#myblogs .clientid {
+	margin-top: 2px;
+	text-transform: uppercase;
+	color: #afafaf;
+}
+
 #myblogs .lastexport {
 	margin-top: 6px;
 	margin-bottom: 0;
@@ -152,7 +161,8 @@
 		top: 0;
 		right: 0;
 	}
-	#myblogs .projectmanager {
+	#myblogs .projectmanager,
+	#myblogs .clientid {
 		clear: both;
 	}
 	#myblogs .my-sites .dashicons-flag {

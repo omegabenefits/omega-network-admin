@@ -251,6 +251,14 @@ function ona_site_meta( $settings_html, $blog_obj ) {
 		$html .= ( empty( $pm ) || empty( $user ) ) ? "?" : $user->display_name ;
 		$html .= "</p>";
 		
+		$client_id = get_blog_option( $blog_obj->userblog_id, 'omega_client_id' );
+		if ( $client_id ) {
+			$html .= "<p class='clientid'>";
+			$html .= "<span class='dashicons dashicons-editor-customchar'></span>";
+			$html .= $client_id;
+			$html .= "</p>";
+		}
+		
 		$lastexport = get_blog_option( $blog_obj->userblog_id, 'omega_last_export' );
 		
 		$html .= "<p class='lastexport'>";

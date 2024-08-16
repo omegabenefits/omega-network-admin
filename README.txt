@@ -4,7 +4,7 @@ Donate link: https://omegabenefits.net
 Tags: admin
 Requires at least: 6.0
 Tested up to: 6.4
-Stable tag: 1.2.2
+Stable tag: 1.2.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -15,6 +15,10 @@ For Multi-Site Networks only! Organizes site listings for easier management
 https://omegabenefits.net/omega-template-system/
 
 == Changelog ==
+
+= 1.2.3 =
+* show database blog ID # when hover over site icon
+* show client ID in meta
 
 = 1.2.2 =
 * site tiles icon for multi-language sites
