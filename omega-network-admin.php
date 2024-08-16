@@ -227,7 +227,7 @@ function ona_site_meta( $settings_html, $blog_obj ) {
 	// only do for site boxes, not the global context
 	if ( is_object( $blog_obj ) ) {
 		$html = "";
-		$html .= "<div class='icon'><img src='".get_site_icon_url( 32, '', $blog_obj->userblog_id )."'/></div>";
+		$html .= "<div class='icon'><img src='".get_site_icon_url( 32, '', $blog_obj->userblog_id )."' title='#".$blog_obj->userblog_id."'/></div>";
 		
 		$version = get_blog_option( $blog_obj->userblog_id, 'omega_system_version' );
 		$html .= "<p class='version'>v";
@@ -262,14 +262,16 @@ function ona_site_meta( $settings_html, $blog_obj ) {
 	}
 }
 
-// add_filter ( 'wpmdb_tables', 'ona_filter_migrate_tables', 99, 2);
+// does seem to filter the table array, but doesn't keep migration from creating what we killed???
+add_filter ( 'wpmdb_tables', 'ona_filter_migrate_tables', 99, 2);
 function ona_filter_migrate_tables( $tables, $scope ) {
+	$kill = [];
 	foreach ( $tables as $key => $val ) {
 		if ( str_contains( $val, 'simply_static_pages' ) ) {
-			unset( $tables[$key] );
-			ray("migration excluded > ".$val);
+			$kill[] = $val;
+			// ray("filtering out table > ".$val);
 		}
 	}
-	// ray(array_values($tables))->hide();
-	return array_values($tables);
+	$tables = array_diff( $tables, $kill );
+	return array_values( $tables );
 }
