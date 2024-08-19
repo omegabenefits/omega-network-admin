@@ -5,7 +5,7 @@
 .sites.fixed .column-omega_multi_lang { width:36px; }
 .sites.fixed .column-omega_plugin { width:40px; }
 .sites.fixed .column-omega_projectmanager { width:100px; }
-.sites.fixed .column-omega_system_version { width:50px; }
+.sites.fixed .column-omega_system_version { width:90px; }
 .sites.fixed .column-omega_last_export { width:160px; }
 .sites.fixed .column-users { width:40px; }
 .sites.fixed .column-lastupdated { width:120px; }
@@ -145,6 +145,35 @@
 	margin-right: 3px;
 	transition: none;
 }
+
+
+#wp-admin-bar-omega-network > .ab-item:before {
+	font: normal 20px/1 dashicons;
+	content: "\f325";
+	top: 2px;
+}
+#wp-admin-bar-omega-network ul.ab-submenu li {
+	margin-bottom: 6px;	
+}
+#wpadminbar .quicklinks .menupop ul li {
+	float: left;
+	display: block;
+}
+#wp-admin-bar-omega-sites-list > .ab-item:before {
+	content: "\f203";
+}
+#wp-admin-bar-omega-users > .ab-item:before {	
+	content: "\f110";
+}
+#wp-admin-bar-omega-migration > .ab-item:before {
+	content: "\f17e";
+}
+#wp-admin-bar-omega-sites-grid > .ab-item:before {
+	content: "\f509";
+}
+
+
+
 @media screen and (width <= 480px) {
 	#myblogs ul.my-sites li {
 		width: 160px;

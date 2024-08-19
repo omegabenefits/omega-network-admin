@@ -3,7 +3,7 @@
  *  Plugin Name: OMEGA Network Admin
  *	Plugin URI: https://omegabenefits.net
  *  Description: For Multi-Site Networks only! Organizes site listings for easier management
- *  Version: 1.2.3
+ *  Version: 1.2.4
  *  Author: Omega Benefits
  *	Author URI: https://omegabenefits.net
  *  License: GPL-2.0+
@@ -64,6 +64,7 @@ add_filter( 'wpmu_blogs_columns', 'omeganetwork_add_sites_column_heading', 99 );
 function omeganetwork_columns_sortable( $sortable_columns ) {
 	// $sortable_columns['omega_system_version']  = 'omega_system_version';
 	$sortable_columns['omega_last_export']   = 'omega_last_export';
+	$sortable_columns['omega_system_version']   = 'omega_system_version';
 	// $sortable_columns['blog_id']  = 'blog_id';
 	// $sortable_columns['public']   = 'public';
 	// $sortable_columns['deleted']  = 'deleted';
@@ -282,4 +283,58 @@ function ona_filter_migrate_tables( $tables, $scope ) {
 	}
 	$tables = array_diff( $tables, $kill );
 	return array_values( $tables );
+}
+
+/**
+ * Add a new admin bar menu item.
+ *
+ * @param WP_Admin_Bar $admin_bar Admin bar reference.
+ */
+add_action( 'admin_bar_menu', 'omega_network_admin_bar_items', 100 );
+function omega_network_admin_bar_items( $admin_bar ) {	
+	if ( current_user_can( 'activate_plugins' ) ) {
+		$admin_bar->add_node(
+			array(
+				'id'     => 'omega-network',
+				'title'  => 'Network',
+				'href'   => admin_url( 'my-sites.php' ),
+			)
+		);
+		
+		$admin_bar->add_node(
+			array(
+				'parent' => 'omega-network',
+				'id'     => 'omega-sites-grid',
+				'title'  => 'Sites Grid',
+				'href'   => admin_url( 'my-sites.php' ),
+			)
+		);
+		
+		$admin_bar->add_node(
+			array(
+				'parent' => 'omega-network',
+				'id'     => 'omega-sites-list',
+				'title'  => 'List Sites',
+				'href'   => network_admin_url( 'sites.php' ),
+			)
+		);
+		
+		$admin_bar->add_node(
+			array(
+				'parent' => 'omega-network',
+				'id'     => 'omega-users',
+				'title'  => 'Users',
+				'href'   => network_admin_url( 'users.php' ),
+			)
+		);
+		
+		$admin_bar->add_node(
+			array(
+				'parent' => 'omega-network',
+				'id'     => 'omega-migration',
+				'title'  => 'Migration',
+				'href'   => network_admin_url( 'settings.php?page=wp-migrate-db-pro' ),
+			)
+		);
+	}
 }
