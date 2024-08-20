@@ -165,6 +165,9 @@
 #wp-admin-bar-omega-users > .ab-item:before {	
 	content: "\f110";
 }
+#wp-admin-bar-omega-plugins > .ab-item:before {	
+	content: "\f106";
+}
 #wp-admin-bar-omega-migration > .ab-item:before {
 	content: "\f17e";
 }
