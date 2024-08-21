@@ -159,7 +159,8 @@
 	float: left;
 	display: block;
 }
-#wp-admin-bar-omega-sites-list > .ab-item:before {
+#wp-admin-bar-omega-sites-list-name > .ab-item:before,
+#wp-admin-bar-omega-sites-list-updated > .ab-item:before {
 	content: "\f203";
 }
 #wp-admin-bar-omega-users > .ab-item:before {	

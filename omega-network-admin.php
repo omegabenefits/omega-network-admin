@@ -63,6 +63,12 @@ add_filter( 'wpmu_blogs_columns', 'omeganetwork_add_sites_column_heading', 99 );
  */
 function omeganetwork_columns_sortable( $sortable_columns ) {
 	// $sortable_columns['omega_system_version']  = 'omega_system_version';
+	$sortable_columns['omega_clientname']   = array(
+		'omega_clientname', // Menu's internal name, same as key in array
+		true, // Initialise with my specified order, false to disregard
+		'Client Name', // Short column name (abbreviation) for `abbr` attribute
+		'Table ordered by Client name alphabetically.', // Translatable string of a brief description to be used for the current sorting
+	);
 	$sortable_columns['omega_last_export']   = 'omega_last_export';
 	$sortable_columns['omega_system_version']   = 'omega_system_version';
 	// $sortable_columns['blog_id']  = 'blog_id';
@@ -74,7 +80,28 @@ function omeganetwork_columns_sortable( $sortable_columns ) {
 }
 add_filter( 'manage_sites-network_sortable_columns', 'omeganetwork_columns_sortable' );
 
+// add_action( 'pre_get_posts', 'my_slice_orderby', 999 );
+// function my_slice_orderby( $query ) {
+// ray($query);
+// 	if( ! is_admin() ) return;
+// 	if ( $query->get( 'orderby' ) == 'blogname') ray ($query);
+// 	return;
+// 	$orderby = $query->get( 'orderby');
+// 	if( 'omega_clientname' == $orderby ) {
+// 		$query->set('meta_key','anco_project_year_from');
+// 		$query->set('orderby','meta_value_num');
+// 	}
+// }
 
+// add_filter( 'ms_sites_list_table_query_args', function($args) {
+// 	ray($args);
+// 	return $args;
+// });
+// 
+// add_filter( 'the_sites', function($sites, $query ) {
+// 	ray($query);
+// 	return $sites;
+// }, 10, 2);
 
 /**
  * Adds the content of the columns
@@ -160,6 +187,17 @@ add_action( 'manage_sites_custom_column', 'omeganetwork_columns_content', 10, 2 
 
 
 function ona_sort_my_sites($blogs) {
+	if ( empty( $blogs ) || !is_array( $blogs ) ) return $blogs;
+	// $modblogs = [];	
+	// foreach ( $blogs as $blog ) {
+	// 	$siteobj = get_site( $blogs[1]->userblog_id );
+	// 	$blog->updated = $siteobj->last_updated;
+	// 	$modblogs[$blog->userblog_id] = $blog;
+	// }
+// ray($modblogs);
+	// usort( $modblogs, function( intval( strtotime($a->updated)), intval( strtotime($b->updated) ) ) { return $a <=> $b; } );
+	// return $modblogs;
+
 	$fsort = function($a, $b) { 
 		return strcasecmp($a->blogname,$b->blogname);
 	};
@@ -313,9 +351,17 @@ function omega_network_admin_bar_items( $admin_bar ) {
 		$admin_bar->add_node(
 			array(
 				'parent' => 'omega-network',
-				'id'     => 'omega-sites-list',
-				'title'  => 'List Sites',
-				'href'   => network_admin_url( 'sites.php' ),
+				'id'     => 'omega-sites-list-name',
+				'title'  => 'List Sites by Name',
+				'href'   => network_admin_url( 'sites.php?orderby=blogname&order=asc' ),
+			)
+		);
+		$admin_bar->add_node(
+			array(
+				'parent' => 'omega-network',
+				'id'     => 'omega-sites-list-updated',
+				'title'  => 'List by Last Updated',
+				'href'   => network_admin_url( 'sites.php?orderby=lastupdated&order=desc' ),
 			)
 		);
 		
