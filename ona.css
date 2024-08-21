@@ -146,6 +146,10 @@
 	transition: none;
 }
 
+#wp-admin-bar-omega-network {
+	width: 180px;
+}
+
 
 #wp-admin-bar-omega-network > .ab-item:before {
 	font: normal 20px/1 dashicons;
