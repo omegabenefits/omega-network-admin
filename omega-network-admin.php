@@ -338,16 +338,14 @@ function omega_network_admin_bar_items( $admin_bar ) {
 				'href'   => admin_url( 'my-sites.php' ),
 			)
 		);
-		
 		$admin_bar->add_node(
 			array(
 				'parent' => 'omega-network',
-				'id'     => 'omega-sites-grid',
-				'title'  => 'Sites Grid',
-				'href'   => admin_url( 'my-sites.php' ),
+				'id'     => 'omega-sites-list-updated',
+				'title'  => 'List by Last Updated',
+				'href'   => network_admin_url( 'sites.php?orderby=lastupdated&order=desc' ),
 			)
 		);
-		
 		$admin_bar->add_node(
 			array(
 				'parent' => 'omega-network',
@@ -359,12 +357,11 @@ function omega_network_admin_bar_items( $admin_bar ) {
 		$admin_bar->add_node(
 			array(
 				'parent' => 'omega-network',
-				'id'     => 'omega-sites-list-updated',
-				'title'  => 'List by Last Updated',
-				'href'   => network_admin_url( 'sites.php?orderby=lastupdated&order=desc' ),
+				'id'     => 'omega-sites-grid',
+				'title'  => 'Grid Layout Sites',
+				'href'   => admin_url( 'my-sites.php' ),
 			)
 		);
-		
 		$admin_bar->add_node(
 			array(
 				'parent' => 'omega-network',
@@ -373,7 +370,6 @@ function omega_network_admin_bar_items( $admin_bar ) {
 				'href'   => network_admin_url( 'users.php' ),
 			)
 		);
-		
 		$admin_bar->add_node(
 			array(
 				'parent' => 'omega-network',
@@ -382,7 +378,6 @@ function omega_network_admin_bar_items( $admin_bar ) {
 				'href'   => network_admin_url( 'plugins.php' ),
 			)
 		);
-		
 		$admin_bar->add_node(
 			array(
 				'parent' => 'omega-network',
