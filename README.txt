@@ -3,8 +3,8 @@ Contributors: somatic
 Donate link: https://omegabenefits.net
 Tags: admin
 Requires at least: 6.0
-Tested up to: 6.4
-Stable tag: 1.2.4
+Tested up to: 6.6
+Stable tag: 1.2.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -15,6 +15,10 @@ For Multi-Site Networks only! Organizes site listings for easier management
 https://omegabenefits.net/omega-template-system/
 
 == Changelog ==
+
+= 1.2.5 =
+* new ability to sort tiles by Latest Updated
+* buttons to indicate sorting on My Sites tile grid
 
 = 1.2.4 =
 * new adminbar menu for network shortcuts

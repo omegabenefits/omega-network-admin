@@ -3,7 +3,7 @@
  *  Plugin Name: OMEGA Network Admin
  *	Plugin URI: https://omegabenefits.net
  *  Description: For Multi-Site Networks only! Organizes site listings for easier management
- *  Version: 1.2.4
+ *  Version: 1.2.5
  *  Author: Omega Benefits
  *	Author URI: https://omegabenefits.net
  *  License: GPL-2.0+
@@ -23,7 +23,7 @@
  );
 
 
-wp_enqueue_style( 'ona-style', plugin_dir_url( __FILE__ ) . 'ona.css', array(), "1.2.3", 'all' );
+wp_enqueue_style( 'ona-style', plugin_dir_url( __FILE__ ) . 'ona.css', array(), "1.2.5", 'all' );
 
 
 /**
@@ -79,29 +79,6 @@ function omeganetwork_columns_sortable( $sortable_columns ) {
 	return $sortable_columns;
 }
 add_filter( 'manage_sites-network_sortable_columns', 'omeganetwork_columns_sortable' );
-
-// add_action( 'pre_get_posts', 'my_slice_orderby', 999 );
-// function my_slice_orderby( $query ) {
-// ray($query);
-// 	if( ! is_admin() ) return;
-// 	if ( $query->get( 'orderby' ) == 'blogname') ray ($query);
-// 	return;
-// 	$orderby = $query->get( 'orderby');
-// 	if( 'omega_clientname' == $orderby ) {
-// 		$query->set('meta_key','anco_project_year_from');
-// 		$query->set('orderby','meta_value_num');
-// 	}
-// }
-
-// add_filter( 'ms_sites_list_table_query_args', function($args) {
-// 	ray($args);
-// 	return $args;
-// });
-// 
-// add_filter( 'the_sites', function($sites, $query ) {
-// 	ray($query);
-// 	return $sites;
-// }, 10, 2);
 
 /**
  * Adds the content of the columns
@@ -185,26 +162,41 @@ function omeganetwork_columns_content( $column_name, $blog_id ) {
 }
 add_action( 'manage_sites_custom_column', 'omeganetwork_columns_content', 10, 2 );
 
-
-function ona_sort_my_sites($blogs) {
+// sorts my-sites tiles
+function ona_sort_my_sites_tiles($blogs) {
 	if ( empty( $blogs ) || !is_array( $blogs ) ) return $blogs;
-	// $modblogs = [];	
-	// foreach ( $blogs as $blog ) {
-	// 	$siteobj = get_site( $blogs[1]->userblog_id );
-	// 	$blog->updated = $siteobj->last_updated;
-	// 	$modblogs[$blog->userblog_id] = $blog;
-	// }
-// ray($modblogs);
-	// usort( $modblogs, function( intval( strtotime($a->updated)), intval( strtotime($b->updated) ) ) { return $a <=> $b; } );
-	// return $modblogs;
-
-	$fsort = function($a, $b) { 
+	// remove multisite primary first
+	unset( $blogs[1] );
+	
+	// sort by LAST UPDATED
+	if ( isset( $_GET['orderby'] ) && $_GET['orderby'] == 'lastupdated' ) {
+		$updatedblogs = [];	
+		foreach ( $blogs as $blog ) {
+			$siteobj = get_site( $blog->userblog_id );
+			$blog->updated = $siteobj->last_updated;
+			// $updatedblogs[$blog->userblog_id] = $blog;
+			$updatedblogs[] = $blog;
+		}
+		usort( $updatedblogs, function( $a, $b ) {
+			return intval( strtotime($b->updated) ) <=> intval( strtotime($a->updated) );
+		});
+		return $updatedblogs; // replace with our sorted clone
+	}
+	
+	
+	if ( isset( $_GET['orderby'] ) && $_GET['orderby'] == 'name' ) {
+		// doing this by default anyways
+	}
+	
+	
+	// sorts my sites by blogname alphabetically (default is by site id, thus order of creation)
+	uasort( $blogs, function($a, $b) { 
 		return strcasecmp($a->blogname,$b->blogname);
-	};
-	uasort($blogs, $fsort);
+	});
 	return $blogs;
 }
-add_filter('get_blogs_of_user','ona_sort_my_sites');
+add_filter('get_blogs_of_user','ona_sort_my_sites_tiles', 10, 1 );
+
 
 
 // add_action( 'admin_bar_menu' , 'ona_admin_bar_menu' );
@@ -335,7 +327,7 @@ function omega_network_admin_bar_items( $admin_bar ) {
 			array(
 				'id'     => 'omega-network',
 				'title'  => 'Network',
-				'href'   => admin_url( 'my-sites.php' ),
+				'href'   => admin_url( 'my-sites.php?orderby=name' ),
 			)
 		);
 		$admin_bar->add_node(
@@ -357,11 +349,20 @@ function omega_network_admin_bar_items( $admin_bar ) {
 		$admin_bar->add_node(
 			array(
 				'parent' => 'omega-network',
-				'id'     => 'omega-sites-grid',
-				'title'  => 'Grid Layout Sites',
-				'href'   => admin_url( 'my-sites.php' ),
+				'id'     => 'omega-sites-grid-updated',
+				'title'  => 'Grid by Last Updated',
+				'href'   => admin_url( 'my-sites.php?orderby=lastupdated' ),
 			)
 		);
+		$admin_bar->add_node(
+			array(
+				'parent' => 'omega-network',
+				'id'     => 'omega-sites-grid-name',
+				'title'  => 'Grid Layout by Name',
+				'href'   => admin_url( 'my-sites.php?orderby=name' ),
+			)
+		);
+
 		$admin_bar->add_node(
 			array(
 				'parent' => 'omega-network',
@@ -388,3 +389,13 @@ function omega_network_admin_bar_items( $admin_bar ) {
 		);
 	}
 }
+// renders sorting buttons on my sites grid page
+add_action( 'myblogs_allblogs_options', function() {
+	echo "<div class='sort-my-sites'>";
+	$orderby = ( $_GET['orderby'] ) ?? false;
+	$selected = ( $orderby == 'lastupdated' ) ? " selected" : "";
+	echo "<a class='button button-secondary{$selected}' href='".add_query_arg( 'orderby', 'lastupdated' )."'>Sort by Latest Updated</a>";
+	$selected = ( $orderby !== 'lastupdated' ) ? " selected" : ""; // basically name should always be highlighted, as is default (even without $_GET)
+	echo "<a class='button button-secondary{$selected}' href='".add_query_arg( 'orderby', 'name' )."'>Sort by Name</a>";
+	echo "</div>";
+});

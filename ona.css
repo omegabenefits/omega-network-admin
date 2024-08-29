@@ -19,6 +19,16 @@
 #myblogs .form-table tbody {
 	display: none;
 }
+#myblogs .sort-my-sites {
+	display: inline-block;
+}
+#myblogs .sort-my-sites .button {
+	margin-right: 6px;
+}
+#myblogs .sort-my-sites .button.selected {
+	background-color: #2170b1;
+	color: #fff;
+}
 
 /* needed to remove the right border */
 #myblogs .my-sites.striped li:after{content:none}
@@ -176,10 +186,10 @@
 #wp-admin-bar-omega-migration > .ab-item:before {
 	content: "\f17e";
 }
-#wp-admin-bar-omega-sites-grid > .ab-item:before {
+#wp-admin-bar-omega-sites-grid-name > .ab-item:before,
+#wp-admin-bar-omega-sites-grid-updated > .ab-item:before {
 	content: "\f509";
 }
-
 
 
 @media screen and (width <= 480px) {
