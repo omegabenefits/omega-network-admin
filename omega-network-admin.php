@@ -23,7 +23,9 @@
  );
 
 
-wp_enqueue_style( 'ona-style', plugin_dir_url( __FILE__ ) . 'ona.css', array(), "1.2.5", 'all' );
+add_action( 'wp_enqueue_scripts', function() {
+	wp_enqueue_style( 'ona-style', plugin_dir_url( __FILE__ ) . 'ona.css', array(), "1.2.5", 'all' );
+});
 
 
 /**
