@@ -399,3 +399,12 @@ add_action( 'myblogs_allblogs_options', function() {
 	echo "<a class='button button-secondary{$selected}' href='".add_query_arg( 'orderby', 'name' )."'>Sort by Name</a>";
 	echo "</div>";
 });
+
+
+add_filter('wpmu_signup_user_notification', 'ona_signup_user_notification', 10, 4);
+function ona_signup_user_notification($user, $user_email, $key, $meta) {
+	// Manually activate the newly created user account
+	wpmu_activate_signup( $key );
+	// Return false to prevent WordPress from sending the user signup email (which includes the account activation link)
+	return false;
+}

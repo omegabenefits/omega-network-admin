@@ -19,6 +19,7 @@ https://omegabenefits.net/omega-template-system/
 = 1.2.5 =
 * new ability to sort tiles by Latest Updated
 * buttons to indicate sorting on My Sites tile grid
+* bypass new user 'activation' email, just automatically activate them
 
 = 1.2.4 =
 * new adminbar menu for network shortcuts
