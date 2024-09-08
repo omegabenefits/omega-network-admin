@@ -238,7 +238,11 @@ function ona_sort_my_sites_tiles($blogs) {
 }
 add_filter('get_blogs_of_user','ona_sort_my_sites_tiles', 10, 1 );
 
-
+// default site query is just 100, make it bigger
+add_filter( 'ms_sites_list_table_query_args', function( $args ) {
+	$args['number'] = 1000;
+	return $args;
+});
 
 // add_action( 'admin_bar_menu' , 'ona_admin_bar_menu' );
 function ona_admin_bar_menu() {
