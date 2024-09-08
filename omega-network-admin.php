@@ -47,6 +47,7 @@ function omeganetwork_add_sites_column_heading( $columns ) {
 		'omega_last_export'		=> 'Last Static Export',
 		'omega_topbar_enable'	=> "Preview",
 		'omega_multi_lang'	    => "Lang",
+		'omega_has_divisions'	=> "Divis",
 		'lastupdated'			=> 'Last Updated',
 		// 'blog_id'				=> 'Subsite ID',
 		// 'public'				=> 'Public',
@@ -111,6 +112,9 @@ function omeganetwork_columns_content( $column_name, $blog_id ) {
 			case "omega_multi_lang":
 				$content = ( empty( $option ) ) ? '-' : '<span class="dashicons dashicons-translation"></span>';
 			break;
+			case "omega_has_divisions":
+				$content = ( empty( $option ) ) ? '-' : '<span class="dashicons dashicons-groups"></span>';
+			break;
 			case "omega_last_export":
 				$content = ( empty( $option ) ) ? "-" : human_time_diff( strtotime( date( "Y-m-d H:i:s" ) ) , strtotime( $option ) ) . " ago <br />". $option;
 			break;
@@ -170,21 +174,56 @@ function ona_sort_my_sites_tiles($blogs) {
 	// remove multisite primary first
 	unset( $blogs[1] );
 	
-	// sort by LAST UPDATED
-	if ( isset( $_GET['orderby'] ) && $_GET['orderby'] == 'lastupdated' ) {
-		$updatedblogs = [];	
-		foreach ( $blogs as $blog ) {
-			$siteobj = get_site( $blog->userblog_id );
-			$blog->updated = $siteobj->last_updated;
-			// $updatedblogs[$blog->userblog_id] = $blog;
-			$updatedblogs[] = $blog;
-		}
-		usort( $updatedblogs, function( $a, $b ) {
-			return intval( strtotime($b->updated) ) <=> intval( strtotime($a->updated) );
-		});
-		return $updatedblogs; // replace with our sorted clone
+	// extend blog objects with our custom data
+	$extblogs = [];	
+	foreach ( $blogs as $blog ) {
+		$siteobj = get_site( $blog->userblog_id );
+		$blog->updated = $siteobj->last_updated;
+		$blog->system = get_blog_option( $blog->userblog_id, 'omega_system_version', '1.0' );
+		$pm = get_blog_option( $blog->userblog_id, 'omega_projectmanager' );
+		$user = get_user_by( 'login', $pm );
+		$blog->pm = ( empty( $pm ) || empty( $user ) ) ? "-" : $user->display_name;
+		$blog->export = get_blog_option( $blog->userblog_id, 'omega_last_export', '' );
+		$blog->preview = get_blog_option( $blog->userblog_id, 'omega_topbar_enable' );
+		$blog->lang = get_blog_option( $blog->userblog_id, 'omega_multi_lang' );
+		$blog->divisions = get_blog_option( $blog->userblog_id, 'omega_has_divisions' );
+		
+		// $extblogs[$blog->userblog_id] = $blog;
+		$extblogs[] = $blog;
 	}
 	
+	// sort by LAST UPDATED
+	if ( isset( $_GET['orderby'] ) && $_GET['orderby'] == 'lastupdated' ) {
+		usort( $extblogs, function( $a, $b ) {
+			return intval( strtotime($b->updated) ) <=> intval( strtotime($a->updated) );
+		});
+		return $extblogs; // replace with our sort
+	}
+	
+	// sort by LAST STATIC EXPORT
+	if ( isset( $_GET['orderby'] ) && $_GET['orderby'] == 'omega_last_export' ) {
+		usort( $extblogs, function( $a, $b ) {
+			return intval( strtotime($b->export) ) <=> intval( strtotime($a->export) );
+		});
+		return $extblogs; // replace with our sort
+	}
+	
+	
+	// sort by TEMPLATE SYSTEM VERSION
+	if ( isset( $_GET['orderby'] ) && $_GET['orderby'] == 'omega_system_version' ) {
+		usort( $extblogs, function( $a, $b ) {
+			return floatval( $b->system ) <=> floatval( $a->system );
+		});
+		return $extblogs; // replace with our sort
+	}
+	
+		
+	if ( isset( $_GET['orderby'] ) && $_GET['orderby'] == 'projectmanager' ) {
+		uasort( $extblogs, function($a, $b) { 
+			return strcasecmp($b->pm,$a->pm);
+		});
+		return $extblogs;
+	}
 	
 	if ( isset( $_GET['orderby'] ) && $_GET['orderby'] == 'name' ) {
 		// doing this by default anyways
@@ -192,10 +231,10 @@ function ona_sort_my_sites_tiles($blogs) {
 	
 	
 	// sorts my sites by blogname alphabetically (default is by site id, thus order of creation)
-	uasort( $blogs, function($a, $b) { 
+	uasort( $extblogs, function($a, $b) { 
 		return strcasecmp($a->blogname,$b->blogname);
 	});
-	return $blogs;
+	return $extblogs;
 }
 add_filter('get_blogs_of_user','ona_sort_my_sites_tiles', 10, 1 );
 
@@ -274,6 +313,10 @@ function ona_site_meta( $settings_html, $blog_obj ) {
 		// show icon if multiple languages
 		if ( get_blog_option( $blog_obj->userblog_id, 'omega_multi_lang' ) ) {
 			$html .= "<span class='lang dashicons dashicons-translation'></span>";
+		}
+		// show icon if has any divisions
+		if ( get_blog_option( $blog_obj->userblog_id, 'omega_has_divisions' ) ) {
+			$html .= "<span class='divisions dashicons dashicons-groups'></span>";
 		}
 
 		$pm = get_blog_option( $blog_obj->userblog_id, 'omega_projectmanager' );
@@ -395,10 +438,22 @@ function omega_network_admin_bar_items( $admin_bar ) {
 add_action( 'myblogs_allblogs_options', function() {
 	echo "<div class='sort-my-sites'>";
 	$orderby = ( $_GET['orderby'] ) ?? false;
+
+	$selected = ( $orderby == 'name' || $orderby === false ) ? " selected" : "";		// basically name should always be highlighted, as is default (even without $_GET)
+	echo "<a class='button button-secondary{$selected}' href='".add_query_arg( 'orderby', 'name' )."'>Sort by Name</a>";
+
 	$selected = ( $orderby == 'lastupdated' ) ? " selected" : "";
 	echo "<a class='button button-secondary{$selected}' href='".add_query_arg( 'orderby', 'lastupdated' )."'>Sort by Latest Updated</a>";
-	$selected = ( $orderby !== 'lastupdated' ) ? " selected" : ""; // basically name should always be highlighted, as is default (even without $_GET)
-	echo "<a class='button button-secondary{$selected}' href='".add_query_arg( 'orderby', 'name' )."'>Sort by Name</a>";
+
+	$selected = ( $orderby == 'omega_last_export' ) ? " selected" : "";
+	echo "<a class='button button-secondary{$selected}' href='".add_query_arg( 'orderby', 'omega_last_export' )."'>Sort by Last Export</a>";
+
+	$selected = ( $orderby == 'omega_system_version' ) ? " selected" : "";
+	echo "<a class='button button-secondary{$selected}' href='".add_query_arg( 'orderby', 'omega_system_version' )."'>Sort by System Version</a>";
+	
+	$selected = ( $orderby == 'projectmanager' ) ? " selected" : "";
+	echo "<a class='button button-secondary{$selected}' href='".add_query_arg( 'orderby', 'projectmanager' )."'>Sort by Project Manager</a>";
+
 	echo "</div>";
 });
 
