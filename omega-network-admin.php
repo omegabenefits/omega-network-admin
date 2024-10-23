@@ -3,7 +3,7 @@
  *  Plugin Name: OMEGA Network Admin
  *	Plugin URI: https://omegabenefits.net
  *  Description: For Multi-Site Networks only! Organizes site listings for easier management
- *  Version: 1.2.6
+ *  Version: 1.2.7
  *  Author: Omega Benefits
  *	Author URI: https://omegabenefits.net
  *  License: GPL-2.0+
@@ -22,9 +22,11 @@
 	 "omega-network-admin" //Plugin slug. Usually it's the same as the name of the directory.
  );
 
-
 add_action( 'admin_enqueue_scripts', function() {
-	wp_enqueue_style( 'ona-style', plugin_dir_url( __FILE__ ) . 'ona.css', array(), "1.2.6", 'all' );
+	wp_enqueue_style( 'ona-style', plugin_dir_url( __FILE__ ) . 'ona.css', array(), "1.2.7", 'all' );
+});
+add_action( 'wp_enqueue_scripts', function() {
+	wp_enqueue_style( 'ona-style', plugin_dir_url( __FILE__ ) . 'ona.css', array(), "1.2.7", 'all' );
 });
 
 
@@ -435,9 +437,25 @@ function omega_network_admin_bar_items( $admin_bar ) {
 				'title'  => 'Migration',
 				'href'   => network_admin_url( 'settings.php?page=wp-migrate-db-pro' ),
 			)
-		);
+		);	
 	}
 }
+
+// SHOW LOCAL DEV LABEL ONLY LOCALLY
+$domain = end( explode( ".", parse_url( network_home_url(), PHP_URL_HOST ) ) );
+if ( $domain === 'local' ) {
+	add_action( 'admin_bar_menu', 'omega_network_admin_bar_local', 101 );
+}
+function omega_network_admin_bar_local( $admin_bar ) {	
+	$admin_bar->add_node(
+		array(
+			'id'     => 'omega-local-dev',
+			'title'  => 'LOCAL',
+		)
+	);	
+}
+
+
 // renders sorting buttons on my sites grid page
 add_action( 'myblogs_allblogs_options', function() {
 	echo "<div class='sort-my-sites'>";

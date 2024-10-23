@@ -16,6 +16,10 @@ https://omegabenefits.net/omega-template-system/
 
 == Changelog ==
 
+= 1.2.7 =
+* local dev notice in admin bar
+* css applied both in front-end and admin
+
 = 1.2.6 =
 * new ability to sort tiles by System Version, Last Export, Project Manager
 * identify sites using Divisions

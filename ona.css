@@ -192,6 +192,24 @@
 	width: 180px;
 }
 
+#wp-admin-bar-omega-local-dev {
+	width: 120px;
+	text-align: center;
+}
+#wp-admin-bar-omega-local-dev > .ab-item {
+	background-color: #ffda00;
+	color: #000;
+	font-weight: 700;
+	letter-spacing: 2px;
+}
+#wp-admin-bar-omega-local-dev > .ab-item:before {	
+	font: normal 20px/1 dashicons;
+	content: "\f332";
+	top: 2px;
+	left:10px;
+	color: #000;
+}
+
 
 #wp-admin-bar-omega-network > .ab-item:before {
 	font: normal 20px/1 dashicons;
