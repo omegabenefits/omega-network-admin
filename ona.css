@@ -236,6 +236,9 @@
 #wp-admin-bar-omega-migration > .ab-item:before {
 	content: "\f17e";
 }
+#wp-admin-bar-omega-export > .ab-item:before {
+	content: "\f316";
+}
 #wp-admin-bar-omega-sites-grid-name > .ab-item:before,
 #wp-admin-bar-omega-sites-grid-updated > .ab-item:before {
 	content: "\f509";

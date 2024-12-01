@@ -437,7 +437,15 @@ function omega_network_admin_bar_items( $admin_bar ) {
 				'title'  => 'Migration',
 				'href'   => network_admin_url( 'settings.php?page=wp-migrate-db-pro' ),
 			)
-		);	
+		);
+		$admin_bar->add_node(
+			array(
+				'parent' => 'omega-network',
+				'id'     => 'omega-export',
+				'title'  => 'Export CSV',
+				'href'   => network_admin_url( 'index.php?action=export_csv' ),
+			)
+		);
 	}
 }
 
@@ -486,4 +494,50 @@ function ona_signup_user_notification($user, $user_email, $key, $meta) {
 	wpmu_activate_signup( $key );
 	// Return false to prevent WordPress from sending the user signup email (which includes the account activation link)
 	return false;
+}
+add_action("admin_action_export_csv", "export_sites_csv");
+function export_sites_csv() {
+	$blogs = get_sites();
+	if ( empty( $blogs ) || !is_array( $blogs ) ) return;
+	array_shift( $blogs ); // remove primary network site
+	$data = [];
+	$data[] = [ "BlogID","ClientName","ClientID","TLD","StagingDomain","PublicDomain","PM","Language","Divisions" ];
+	foreach ( $blogs as $blog ) {
+		$line = [];
+		$line[] = $blog->blog_id;
+		$line[] = get_blog_option( $blog->blog_id, 'blogname');
+		$line[] = get_blog_option( $blog->blog_id, 'omega_client_id' );
+		$line[] = preg_replace("/^([a-zA-Z0-9].*\.)?([a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z.]{2,})$/", '$2', get_blog_option( $blog->blog_id, 'omega_public_domain' ) );
+		$line[] = "https://".get_blog_option( $blog->blog_id, 'omega_local_domain' );
+		$line[] = "https://".get_blog_option( $blog->blog_id, 'omega_public_domain' );
+		$pm = get_blog_option( $blog->blog_id, 'omega_projectmanager' );
+			$user = get_user_by( 'login', $pm );
+		$line[] = ( empty( $pm ) || empty( $user ) ) ? "-" : $user->display_name;
+		$line[] = get_blog_option( $blog->blog_id, 'omega_multi_lang' );
+		$line[] = get_blog_option( $blog->blog_id, 'omega_has_divisions' );
+		
+		$data[] = $line;
+	}
+// ray($data);
+	$filename = 'staging-sites-export.csv';
+	$filepath = ABSPATH . $filename;
+	$file = fopen( $filepath, "w");
+	foreach ($data as $line) {
+		fputcsv($file, $line);
+	}
+	$saved = fclose($file);
+	
+	// PHP headers for download
+	ob_start();
+	header("Pragma: public");
+	header("Expires: 0");
+	header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+	header('Content-type: application/octet-stream');
+	header('Content-Disposition: attachment; filename="' . $filename . '"');
+	header('Content-Transfer-Encoding: binary');
+	header('Content-Length: ' . filesize( $filepath ) );
+	header('Accept-Ranges: bytes');
+	ob_end_clean();
+	@readfile( $filepath );
+	unlink( $filepath );
 }
