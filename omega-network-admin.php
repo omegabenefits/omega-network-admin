@@ -497,7 +497,7 @@ function ona_signup_user_notification($user, $user_email, $key, $meta) {
 }
 add_action("admin_action_export_csv", "export_sites_csv");
 function export_sites_csv() {
-	$blogs = get_sites();
+	$blogs = get_sites( [ 'number' => 999 ] ); // default query is 100
 	if ( empty( $blogs ) || !is_array( $blogs ) ) return;
 	array_shift( $blogs ); // remove primary network site
 	$data = [];
