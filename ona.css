@@ -58,7 +58,7 @@
 	flex-flow: row wrap;
 	gap: 2px;
 }
-#myblogs .my-sites img {
+#myblogs .my-sites .icon img {
 	display: block;
 	width: 24px;
 	height: 24px;
@@ -151,6 +151,15 @@
 #myblogs .lastexport {
 	margin-top: 6px;
 	margin-bottom: 0;
+}
+#myblogs .netlify {
+	margin-top: 6px;
+	margin-bottom: 0;
+}
+#myblogs .netlify a {
+	outline: none;
+	text-decoration: none;
+	border: none;
 }
 #myblogs .lastexport .label {
 	display: block;

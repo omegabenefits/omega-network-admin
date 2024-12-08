@@ -29,6 +29,18 @@ add_action( 'wp_enqueue_scripts', function() {
 	wp_enqueue_style( 'ona-style', plugin_dir_url( __FILE__ ) . 'ona.css', array(), "1.2.8", 'all' );
 });
 
+// force plugin update checks when on Updates page
+add_action( 'admin_init', function() {
+	if ( isset( $GLOBALS['pagenow'] ) && $GLOBALS['pagenow'] == 'update-core.php' ) {
+		// wp-includes\update.php
+		wp_clean_update_cache();
+		// wp-includes\update.php
+		wp_update_themes();
+		// wp-includes\update.php
+		wp_update_plugins();		
+	}
+});
+
 
 /**
  * Adds the columns headings
@@ -347,6 +359,13 @@ function ona_site_meta( $settings_html, $blog_obj ) {
 		$html .= "<span class='label'>Last Static Export</span>";
 		$html .= ( empty( $lastexport ) ) ? "- <br /><br />" : human_time_diff( strtotime( date( "Y-m-d H:i:s" ) ) , strtotime( $lastexport ) ) . " ago <br /><span class='rawtime'>". $lastexport. "</span>";
 		$html .= "</p>";
+		
+		$netlify_id = get_blog_option( $blog_obj->userblog_id, 'omega_netlify_id' );
+		if ( $netlify_id ) {
+			$html .= "<p class='netlify'>";
+			$html .= '<a class="nounderline" target="_blank" href="https://app.netlify.com/sites/omega-'.$client_id.'/deploys"><img src="https://api.netlify.com/api/v1/badges/'.$netlify_id.'/deploy-status" /></a>';
+			$html .= "</p>";
+		} 
 		
 		return $html;
 	}

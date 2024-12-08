@@ -18,6 +18,7 @@ https://omegabenefits.net/omega-template-system/
 
 = 1.2.8 =
 * adminbar menu item to download CSV export of all sites
+* netlify deploy badge on site tiles
 
 = 1.2.7 =
 * local dev notice in admin bar
