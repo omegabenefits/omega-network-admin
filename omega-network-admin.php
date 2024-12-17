@@ -23,10 +23,10 @@
  );
 
 add_action( 'admin_enqueue_scripts', function() {
-	wp_enqueue_style( 'ona-style', plugin_dir_url( __FILE__ ) . 'ona.css', array(), "1.2.8", 'all' );
+	wp_enqueue_style( 'ona-style', plugin_dir_url( __FILE__ ) . 'ona.css', array(), filemtime(plugin_dir_path( __FILE__ ) . 'ona.css'), 'all' );
 });
 add_action( 'wp_enqueue_scripts', function() {
-	wp_enqueue_style( 'ona-style', plugin_dir_url( __FILE__ ) . 'ona.css', array(), "1.2.8", 'all' );
+	wp_enqueue_style( 'ona-style', plugin_dir_url( __FILE__ ) . 'ona.css', array(), filemtime(plugin_dir_path( __FILE__ ) . 'ona.css'), 'all' );
 });
 
 // force plugin update checks when on Updates page
@@ -474,10 +474,12 @@ if ( $domain === 'local' ) {
 	add_action( 'admin_bar_menu', 'omega_network_admin_bar_local', 101 );
 }
 function omega_network_admin_bar_local( $admin_bar ) {	
+	$title = "LOCAL";
+	if ( get_blog_option( get_current_blog_id(), 'omega_local_dev' ) ) $title = "LOCAL DEV";
 	$admin_bar->add_node(
 		array(
 			'id'     => 'omega-local-dev',
-			'title'  => 'LOCAL',
+			'title'  => $title,
 		)
 	);	
 }

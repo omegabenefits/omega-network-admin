@@ -1,5 +1,6 @@
 /* @override 
-	https://omegastaging.local/wp-content/plugins/omega-network-admin/ona.css?* */
+	https://omegastaging.local/wp-content/plugins/omega-network-admin/ona.css?*
+	https://aerodyn.omegastaging.local/wp-content/plugins/omega-network-admin/ona.css?* */
 
 :root {
 	--ona-flag-icon: #c4a616;
@@ -197,26 +198,27 @@
 	transition: none;
 }
 
-#wp-admin-bar-omega-network {
-	width: 180px;
+#wpadminbar li#wp-admin-bar-omega-network {
+	width: 200px;
 }
 
-#wp-admin-bar-omega-local-dev {
-	width: 120px;
-	text-align: center;
+#wpadminbar li#wp-admin-bar-omega-local-dev {
 }
-#wp-admin-bar-omega-local-dev > .ab-item {
+#wpadminbar li#wp-admin-bar-omega-local-dev > .ab-item {
 	background-color: #ffda00;
 	color: #000;
 	font-weight: 700;
 	letter-spacing: 2px;
+	display: block;
+	padding-right: 20px;
 }
-#wp-admin-bar-omega-local-dev > .ab-item:before {	
+#wpadminbar li#wp-admin-bar-omega-local-dev > .ab-item:before {	
 	font: normal 20px/1 dashicons;
 	content: "\f332";
 	top: 2px;
 	left:10px;
 	color: #000;
+	margin-right: 14px;
 }
 
 
