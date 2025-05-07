@@ -408,7 +408,7 @@ function ona_site_meta( $settings_html, $blog_obj ) {
 		$html .= "<p class='lastexport'>";
 		$html .= "<span class='label'>Last Static Export</span>";
 		$html .= ( empty( $lastexport ) ) ? "- <br /><br />" : human_time_diff( strtotime( date( "Y-m-d H:i:s" ) ) , strtotime( $lastexport ) ) . " ago <br />";
-		if ( $errors ) $html .= "<span class='errors'>404 Errors &nbsp;<span class='dashicons dashicons-warning'></span></span>";
+		if ( $errors ) $html .= "<a href='".$blog_obj->siteurl."/wp-admin/'><span class='errors'>404 Errors &nbsp;<span class='dashicons dashicons-warning'></span></span></a>";
 		$html .= "</p>";
 		
 		$netlify_id = get_blog_option( $blog_obj->userblog_id, 'omega_netlify_id' );
