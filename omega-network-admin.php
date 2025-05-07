@@ -41,6 +41,48 @@ add_action( 'admin_init', function() {
 	}
 });
 
+// prevents fatal error when ray() doesn't exist (plugin missing)
+// MUST CHECK AFTER ALL PLUGINS LOADED (alphabetically we're before Spatie Ray!)
+// https://github.com/spatie/wordpress-ray/discussions/9
+add_action("plugins_loaded", function() {
+	if ( !function_exists('ray') ) {
+	
+		class Ray_Dummy_Class {
+			function __call($funName, $arguments) {
+				return new Ray_Dummy_Class();
+			}
+			static function ray(...$args) {
+				return new Ray_Dummy_Class();
+			}
+			function __get($propertyName) {
+				return null;
+			}
+			function __set($property, $value) {
+			}
+		}
+	
+		function ray(...$args) {
+			// when Ray plugin is missing, we fallback to storing ray calls
+			// append log data to transient, will be checked at shutdown hook to render <script> for console
+			$log = get_transient( 'ray_console' );
+			if ( empty( $log ) || !is_array( $log ) ) $log = array();
+			if ( is_array( $args ) ) {
+				foreach ( $args as $arg ) {
+					$log[] = $arg;
+				}
+			}
+			set_transient( 'ray_console', $log, HOUR_IN_SECONDS );
+			//
+			return Ray_Dummy_Class::ray(...$args);
+		}
+	}
+});
+
+// dev testing sandbox
+add_action( 'shutdown', function() {
+	if ( wp_doing_ajax() ) return;
+});
+
 
 /**
  * Adds the columns headings
@@ -201,6 +243,7 @@ function ona_sort_my_sites_tiles($blogs) {
 		$blog->preview = get_blog_option( $blog->userblog_id, 'omega_topbar_enable' );
 		$blog->lang = get_blog_option( $blog->userblog_id, 'omega_multi_lang' );
 		$blog->divisions = get_blog_option( $blog->userblog_id, 'omega_has_divisions' );
+		$blog->year = get_blog_option( $blog->userblog_id, 'omega_current_year' );
 		
 		// $extblogs[$blog->userblog_id] = $blog;
 		$extblogs[] = $blog;
@@ -231,7 +274,15 @@ function ona_sort_my_sites_tiles($blogs) {
 		return $extblogs; // replace with our sort
 	}
 	
-		
+	// sort by CURRENT YEAR
+	if ( isset( $_GET['orderby'] ) && $_GET['orderby'] == 'omega_current_year' ) {
+		usort( $extblogs, function( $a, $b ) {
+			return floatval( $b->year ) <=> floatval( $a->year );
+		});
+		return $extblogs; // replace with our sort
+	}
+	
+	// sort by PROJECT MANAGER	
 	if ( isset( $_GET['orderby'] ) && $_GET['orderby'] == 'projectmanager' ) {
 		uasort( $extblogs, function($a, $b) { 
 			return strcasecmp($b->pm,$a->pm);
@@ -346,18 +397,18 @@ function ona_site_meta( $settings_html, $blog_obj ) {
 		$html .= "</p>";
 		
 		$client_id = get_blog_option( $blog_obj->userblog_id, 'omega_client_id' );
-		if ( $client_id ) {
-			$html .= "<p class='clientid'>";
-			$html .= "<span class='dashicons dashicons-editor-customchar'></span>";
-			$html .= $client_id;
-			$html .= "</p>";
-		}
+		if ( $client_id ) $html .= "<p class='clientid'><span class='dashicons dashicons-editor-customchar'></span>$client_id</p>";
+		
+		$year = get_blog_option( $blog_obj->userblog_id, 'omega_current_year' );
+		if ( $year ) $html .= "<p class='currentyear'><span class='dashicons dashicons-calendar-alt'></span>$year</p>";
 		
 		$lastexport = get_blog_option( $blog_obj->userblog_id, 'omega_last_export' );
+		$errors = get_blog_option( $blog_obj->userblog_id, 'omega_export_404s' );
 		
 		$html .= "<p class='lastexport'>";
 		$html .= "<span class='label'>Last Static Export</span>";
-		$html .= ( empty( $lastexport ) ) ? "- <br /><br />" : human_time_diff( strtotime( date( "Y-m-d H:i:s" ) ) , strtotime( $lastexport ) ) . " ago <br /><span class='rawtime'>". $lastexport. "</span>";
+		$html .= ( empty( $lastexport ) ) ? "- <br /><br />" : human_time_diff( strtotime( date( "Y-m-d H:i:s" ) ) , strtotime( $lastexport ) ) . " ago <br />";
+		if ( $errors ) $html .= "<span class='errors'>404 Errors &nbsp;<span class='dashicons dashicons-warning'></span></span>";
 		$html .= "</p>";
 		
 		$netlify_id = get_blog_option( $blog_obj->userblog_id, 'omega_netlify_id' );
@@ -365,7 +416,7 @@ function ona_site_meta( $settings_html, $blog_obj ) {
 			$html .= "<p class='netlify'>";
 			$html .= '<a class="nounderline" target="_blank" href="https://app.netlify.com/sites/omega-'.$client_id.'/deploys"><img src="https://api.netlify.com/api/v1/badges/'.$netlify_id.'/deploy-status" /></a>';
 			$html .= "</p>";
-		} 
+		}
 		
 		return $html;
 	}
@@ -469,8 +520,9 @@ function omega_network_admin_bar_items( $admin_bar ) {
 }
 
 // SHOW LOCAL DEV LABEL ONLY LOCALLY
-$domain = end( explode( ".", parse_url( network_home_url(), PHP_URL_HOST ) ) );
-if ( $domain === 'local' ) {
+$domain = explode( ".", parse_url( network_home_url(), PHP_URL_HOST ) );
+$tld = end( $domain );
+if ( $tld === 'local' ) {
 	add_action( 'admin_bar_menu', 'omega_network_admin_bar_local', 101 );
 }
 function omega_network_admin_bar_local( $admin_bar ) {	
@@ -498,6 +550,9 @@ add_action( 'myblogs_allblogs_options', function() {
 
 	$selected = ( $orderby == 'omega_last_export' ) ? " selected" : "";
 	echo "<a class='button button-secondary{$selected}' href='".add_query_arg( 'orderby', 'omega_last_export' )."'>Sort by Last Export</a>";
+	
+	$selected = ( $orderby == 'omega_current_year' ) ? " selected" : "";
+	echo "<a class='button button-secondary{$selected}' href='".add_query_arg( 'orderby', 'omega_current_year' )."'>Sort by Current Year</a>";
 
 	$selected = ( $orderby == 'omega_system_version' ) ? " selected" : "";
 	echo "<a class='button button-secondary{$selected}' href='".add_query_arg( 'orderby', 'omega_system_version' )."'>Sort by System Version</a>";

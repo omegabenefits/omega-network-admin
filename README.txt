@@ -16,6 +16,12 @@ https://omegabenefits.net/omega-template-system/
 
 == Changelog ==
 
+= 1.3 =
+* fixed periodic php warning for end() with local domain
+* show 404 error log status on site tiles
+* show current year on site tiles
+* new ability to sort tiles by Current Year
+
 = 1.2.8 =
 * adminbar menu item to download CSV export of all sites
 * netlify deploy badge on site tiles

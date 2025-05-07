@@ -1,6 +1,8 @@
 /* @override 
 	https://omegastaging.local/wp-content/plugins/omega-network-admin/ona.css?*
-	https://aerodyn.omegastaging.local/wp-content/plugins/omega-network-admin/ona.css?* */
+	https://aerodyn.omegastaging.local/wp-content/plugins/omega-network-admin/ona.css?*
+	https://bronxworks.omegastaging.local/wp-content/plugins/omega-network-admin/ona.css?*
+	https://janusinternationalgroup.omegastaging.local/wp-content/plugins/omega-network-admin/ona.css?* */
 
 :root {
 	--ona-flag-icon: #c4a616;
@@ -131,7 +133,8 @@
 }
 
 #myblogs .projectmanager,
-#myblogs .clientid {
+#myblogs .clientid,
+#myblogs .currentyear {
 	font-size: 12px;
 	font-weight: 700;
 	line-height: 20px;
@@ -139,14 +142,19 @@
 	color: #b06363;
 }
 #myblogs .projectmanager .dashicons,
-#myblogs .clientid .dashicons {
+#myblogs .clientid .dashicons,
+#myblogs .currentyear .dashicons {
 	color: #cdcdcd;
 	margin-right: 3px;
+	
 }
 #myblogs .clientid {
 	margin-top: 2px;
 	text-transform: uppercase;
 	color: #afafaf;
+}
+#myblogs .currentyear {
+	color: #777;
 }
 
 #myblogs .lastexport {
@@ -168,6 +176,18 @@
 	font-size: 10px;
 	font-weight: 700;
 	color: #6ea5d2;
+}
+#myblogs .lastexport .errors {
+	background-color: red;
+	color: #fff;
+	display: inline-block;
+	line-height: 20px;
+	padding: 4px 6px;
+	border-radius: 6px;
+	text-transform: uppercase;
+	font-weight: 700;
+	font-size: 14px;
+	margin: 8px 0;
 }
 
 #myblogs .my-sites .rawtime {
