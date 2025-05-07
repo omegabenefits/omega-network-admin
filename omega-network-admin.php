@@ -553,12 +553,12 @@ add_action( 'myblogs_allblogs_options', function() {
 	
 	$selected = ( $orderby == 'omega_current_year' ) ? " selected" : "";
 	echo "<a class='button button-secondary{$selected}' href='".add_query_arg( 'orderby', 'omega_current_year' )."'>Sort by Current Year</a>";
-
-	$selected = ( $orderby == 'omega_system_version' ) ? " selected" : "";
-	echo "<a class='button button-secondary{$selected}' href='".add_query_arg( 'orderby', 'omega_system_version' )."'>Sort by System Version</a>";
 	
 	$selected = ( $orderby == 'projectmanager' ) ? " selected" : "";
 	echo "<a class='button button-secondary{$selected}' href='".add_query_arg( 'orderby', 'projectmanager' )."'>Sort by Project Manager</a>";
+	
+	// $selected = ( $orderby == 'omega_system_version' ) ? " selected" : "";
+	// echo "<a class='button button-secondary{$selected}' href='".add_query_arg( 'orderby', 'omega_system_version' )."'>Sort by System Version</a>";
 
 	echo "</div>";
 });
