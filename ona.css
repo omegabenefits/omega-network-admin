@@ -1,8 +1,6 @@
 /* @override 
 	https://omegastaging.local/wp-content/plugins/omega-network-admin/ona.css?*
-	https://aerodyn.omegastaging.local/wp-content/plugins/omega-network-admin/ona.css?*
-	https://bronxworks.omegastaging.local/wp-content/plugins/omega-network-admin/ona.css?*
-	https://janusinternationalgroup.omegastaging.local/wp-content/plugins/omega-network-admin/ona.css?* */
+*/
 
 :root {
 	--ona-flag-icon: #c4a616;
@@ -51,6 +49,14 @@
 #myblogs .sort-my-sites .button.selected {
 	background-color: #2170b1;
 	color: #fff;
+}
+
+#myblogs .filterSites {
+	display: inline-block;
+}
+#myblogs input::placeholder {
+   font-style: italic;
+   color: #aaa;
 }
 
 /* needed to remove the right border */

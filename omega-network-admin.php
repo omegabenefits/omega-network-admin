@@ -24,6 +24,7 @@
 
 add_action( 'admin_enqueue_scripts', function() {
 	wp_enqueue_style( 'ona-style', plugin_dir_url( __FILE__ ) . 'ona.css', array(), filemtime(plugin_dir_path( __FILE__ ) . 'ona.css'), 'all' );
+	wp_enqueue_script( 'ona-script', plugin_dir_url( __FILE__ ) . 'ona.js', array(), filemtime(plugin_dir_path( __FILE__ ) . 'ona.js'), 'all' );
 });
 add_action( 'wp_enqueue_scripts', function() {
 	wp_enqueue_style( 'ona-style', plugin_dir_url( __FILE__ ) . 'ona.css', array(), filemtime(plugin_dir_path( __FILE__ ) . 'ona.css'), 'all' );
@@ -539,6 +540,7 @@ function omega_network_admin_bar_local( $admin_bar ) {
 
 // renders sorting buttons on my sites grid page
 add_action( 'myblogs_allblogs_options', function() {
+	
 	echo "<div class='sort-my-sites'>";
 	$orderby = ( $_GET['orderby'] ) ?? false;
 
@@ -559,8 +561,13 @@ add_action( 'myblogs_allblogs_options', function() {
 	
 	// $selected = ( $orderby == 'omega_system_version' ) ? " selected" : "";
 	// echo "<a class='button button-secondary{$selected}' href='".add_query_arg( 'orderby', 'omega_system_version' )."'>Sort by System Version</a>";
-
+	?>
+	<div class="filterSites">
+		<input type='text' id='filterSites' placeholder='enter client name'><span style="vertical-align:middle; margin-left: 4px;" class="dashicons dashicons-search"></span><span class="filtertext">FILTER by Name</span>
+	</div>
+	<?php
 	echo "</div>";
+
 });
 
 

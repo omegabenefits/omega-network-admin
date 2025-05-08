@@ -21,6 +21,7 @@ https://omegabenefits.net/omega-template-system/
 * show 404 error log status on site tiles
 * show current year on site tiles
 * new ability to sort tiles by Current Year
+* new filter tiles as you type by Name
 
 = 1.2.8 =
 * adminbar menu item to download CSV export of all sites
