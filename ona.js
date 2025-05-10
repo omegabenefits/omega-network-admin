@@ -43,6 +43,5 @@
 				);
 			});
 		});
-		console.log('filtering??');
 	});
 })(jQuery);
