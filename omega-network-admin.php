@@ -3,7 +3,7 @@
  *  Plugin Name: OMEGA Network Admin
  *	Plugin URI: https://omegabenefits.net
  *  Description: For Multi-Site Networks only! Organizes site listings for easier management
- *  Version: 1.3
+ *  Version: 1.3.1
  *  Author: Omega Benefits
  *	Author URI: https://omegabenefits.net
  *  License: GPL-2.0+
@@ -400,6 +400,9 @@ function ona_site_meta( $settings_html, $blog_obj ) {
 		$client_id = get_blog_option( $blog_obj->userblog_id, 'omega_client_id' );
 		if ( $client_id ) $html .= "<p class='clientid'><span class='dashicons dashicons-editor-customchar'></span>$client_id</p>";
 		
+		$client_nick = get_blog_option( $blog_obj->userblog_id, 'omega_client_nickname' );
+		if ( $client_nick ) $html .= "<p class='clientnick'><span class='dashicons dashicons-admin-comments'></span>$client_nick</p>";
+		
 		$year = get_blog_option( $blog_obj->userblog_id, 'omega_current_year' );
 		if ( $year ) $html .= "<p class='currentyear'><span class='dashicons dashicons-calendar-alt'></span>$year</p>";
 		
@@ -543,6 +546,12 @@ add_action( 'myblogs_allblogs_options', function() {
 	
 	echo "<div class='sort-my-sites'>";
 	$orderby = ( $_GET['orderby'] ) ?? false;
+	
+	?>
+	<div class="filterSites">
+		<span class="filtertext">FILTER</span><span style="vertical-align:middle; margin-right: 4px; margin-left: 4px;" class="dashicons dashicons-search"></span><input type='text' id='filterSites' placeholder='type client name'>
+	</div>
+	<?php
 
 	$selected = ( $orderby == 'name' || $orderby === false ) ? " selected" : "";		// basically name should always be highlighted, as is default (even without $_GET)
 	echo "<a class='button button-secondary{$selected}' href='".add_query_arg( 'orderby', 'name' )."'>Sort by Name</a>";
@@ -561,11 +570,7 @@ add_action( 'myblogs_allblogs_options', function() {
 	
 	// $selected = ( $orderby == 'omega_system_version' ) ? " selected" : "";
 	// echo "<a class='button button-secondary{$selected}' href='".add_query_arg( 'orderby', 'omega_system_version' )."'>Sort by System Version</a>";
-	?>
-	<div class="filterSites">
-		<input type='text' id='filterSites' placeholder='enter client name'><span style="vertical-align:middle; margin-left: 4px;" class="dashicons dashicons-search"></span><span class="filtertext">FILTER by Name</span>
-	</div>
-	<?php
+
 	echo "</div>";
 
 });

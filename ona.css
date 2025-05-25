@@ -140,19 +140,28 @@
 
 #myblogs .projectmanager,
 #myblogs .clientid,
+#myblogs .clientnick,
 #myblogs .currentyear {
 	font-size: 12px;
 	font-weight: 700;
 	line-height: 20px;
 	margin: 0;
-	color: #b06363;
 }
 #myblogs .projectmanager .dashicons,
 #myblogs .clientid .dashicons,
+#myblogs .clientnick .dashicons,
 #myblogs .currentyear .dashicons {
 	color: #cdcdcd;
 	margin-right: 3px;
 	
+}
+#myblogs .projectmanager {
+	color: #b06363;
+}
+#myblogs .clientnick {
+	font-style: italic;
+	color: #afafaf;
+	font-weight: 500;
 }
 #myblogs .clientid {
 	margin-top: 2px;

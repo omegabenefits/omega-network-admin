@@ -30,6 +30,10 @@
 	 */
 
 	$(function() {
+		// hide the blog grid list submit button
+		$('p.submit > #submit').hide();
+
+		// live filtering as type in field
 		$('#filterSites').on('keyup', function() {
 			var value = $(this)
 				.val()
@@ -43,5 +47,13 @@
 				);
 			});
 		});
+
+		// prevent hitting enter key on filter field from submitting page form and refreshing
+		$('#filterSites').on('keydown', function(event) {
+			return event.key != 'Enter';
+		});
+
+		// make the filter field ready for text entry upon load
+		$('#filterSites').select();
 	});
 })(jQuery);
