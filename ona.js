@@ -31,7 +31,7 @@
 
 	$(function() {
 		// hide the blog grid list submit button
-		$('p.submit > #submit').hide();
+		$('body.my-sites-php p.submit > #submit').hide();
 
 		// live filtering as type in field
 		$('#filterSites').on('keyup', function() {
