@@ -507,6 +507,14 @@ function omega_network_admin_bar_items( $admin_bar ) {
 		$admin_bar->add_node(
 			array(
 				'parent' => 'omega-network',
+				'id'     => 'omega-addsite',
+				'title'  => 'Add New Site',
+				'href'   => network_admin_url( 'site-new.php' ),
+			)
+		);
+		$admin_bar->add_node(
+			array(
+				'parent' => 'omega-network',
 				'id'     => 'omega-migration',
 				'title'  => 'Migration',
 				'href'   => network_admin_url( 'settings.php?page=wp-migrate-db-pro' ),

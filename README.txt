@@ -19,6 +19,7 @@ https://omegabenefits.net/omega-template-system/
 = 1.3.1 =
 * show client nickname on tiles if exists
 * improve live search filter UI
+* adminbar item: add new site
 
 = 1.3 =
 * fixed periodic php warning for end() with local domain

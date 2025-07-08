@@ -282,6 +282,9 @@
 #wp-admin-bar-omega-migration > .ab-item:before {
 	content: "\f17e";
 }
+#wp-admin-bar-omega-addsite > .ab-item:before {
+	content: "\f502";
+}
 #wp-admin-bar-omega-export > .ab-item:before {
 	content: "\f316";
 }
