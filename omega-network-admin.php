@@ -240,7 +240,7 @@ function ona_sort_my_sites_tiles($blogs) {
 		$pm = get_blog_option( $blog->userblog_id, 'omega_projectmanager' );
 		$user = get_user_by( 'login', $pm );
 		$blog->pm = ( empty( $pm ) || empty( $user ) ) ? "-" : $user->display_name;
-		$blog->export = get_blog_option( $blog->userblog_id, 'omega_last_export', '' );
+		$blog->export = get_blog_option( $blog->userblog_id, 'omega_last_export_time', '' );
 		$blog->preview = get_blog_option( $blog->userblog_id, 'omega_topbar_enable' );
 		$blog->lang = get_blog_option( $blog->userblog_id, 'omega_multi_lang' );
 		$blog->divisions = get_blog_option( $blog->userblog_id, 'omega_has_divisions' );
@@ -406,7 +406,7 @@ function ona_site_meta( $settings_html, $blog_obj ) {
 		$year = get_blog_option( $blog_obj->userblog_id, 'omega_current_year' );
 		if ( $year ) $html .= "<p class='currentyear'><span class='dashicons dashicons-calendar-alt'></span>$year</p>";
 		
-		$lastexport = get_blog_option( $blog_obj->userblog_id, 'omega_last_export' );
+		$lastexport = get_blog_option( $blog_obj->userblog_id, 'omega_last_export_time' );
 		$errors = get_blog_option( $blog_obj->userblog_id, 'omega_export_404s' );
 		
 		$html .= "<p class='lastexport'>";
