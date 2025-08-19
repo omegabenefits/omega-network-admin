@@ -42,6 +42,9 @@ add_action( 'admin_init', function() {
 	}
 });
 
+// hide blavatar site icons in My Sites admin bar menu (avoids tons of 404s when those icons are missing)
+add_filter( 'wp_admin_bar_show_site_icons', '__return_false' );
+
 // prevents fatal error when ray() doesn't exist (plugin missing)
 // MUST CHECK AFTER ALL PLUGINS LOADED (alphabetically we're before Spatie Ray!)
 // https://github.com/spatie/wordpress-ray/discussions/9
@@ -408,12 +411,16 @@ function ona_site_meta( $settings_html, $blog_obj ) {
 		
 		$lastexport = get_blog_option( $blog_obj->userblog_id, 'omega_last_export_time' );
 		$errors = get_blog_option( $blog_obj->userblog_id, 'omega_export_404s' );
+		$fails = get_blog_option( $blog_obj->userblog_id, 'omega_redirect_fails' );
 		
 		$html .= "<p class='lastexport'>";
 		$html .= "<span class='label'>Last Static Export</span>";
 		$html .= ( empty( $lastexport ) ) ? "- <br /><br />" : human_time_diff( strtotime( date( "Y-m-d H:i:s" ) ) , strtotime( $lastexport ) ) . " ago <br />";
-		if ( $errors ) $html .= "<a href='".$blog_obj->siteurl."/wp-admin/'><span class='errors'>404 Errors &nbsp;<span class='dashicons dashicons-warning'></span></span></a>";
 		$html .= "</p>";
+		
+		// warning flags
+		if ( $errors ) $html .= "<a class='flags errors' href='".$blog_obj->siteurl."/wp-admin/'>404 Errors &nbsp;<span class='dashicons dashicons-warning'></span></a>";
+		if ( $fails ) $html .= "<a class='flags fails' href='".$blog_obj->siteurl."/wp-admin/'>Redirect Fails &nbsp;<span class='dashicons dashicons-warning'></span></a>";
 		
 		$netlify_id = get_blog_option( $blog_obj->userblog_id, 'omega_netlify_id' );
 		if ( $netlify_id ) {

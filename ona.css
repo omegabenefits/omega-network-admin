@@ -1,5 +1,6 @@
 /* @override 
 	https://omegastaging.local/wp-content/plugins/omega-network-admin/ona.css?*
+	https://agcbio.omegastaging.local/wp-content/plugins/omega-network-admin/ona.css?*
 */
 
 :root {
@@ -12,15 +13,41 @@
 }
 
 
-.sites.fixed .column-omega_topbar_enable { width:52px; }
-.sites.fixed .column-omega_multi_lang { width:36px; }
-.sites.fixed .column-omega_has_divisions { width:36px; }
-.sites.fixed .column-omega_plugin { width:40px; }
-.sites.fixed .column-omega_projectmanager { width:100px; }
-.sites.fixed .column-omega_system_version { width:90px; }
-.sites.fixed .column-omega_last_export { width:160px; }
-.sites.fixed .column-users { width:40px; }
-.sites.fixed .column-lastupdated { width:120px; }
+.sites.fixed .column-omega_topbar_enable {
+	width: 52px;
+}
+
+.sites.fixed .column-omega_multi_lang {
+	width: 36px;
+}
+
+.sites.fixed .column-omega_has_divisions {
+	width: 36px;
+}
+
+.sites.fixed .column-omega_plugin {
+	width: 40px;
+}
+
+.sites.fixed .column-omega_projectmanager {
+	width: 100px;
+}
+
+.sites.fixed .column-omega_system_version {
+	width: 90px;
+}
+
+.sites.fixed .column-omega_last_export {
+	width: 160px;
+}
+
+.sites.fixed .column-users {
+	width: 40px;
+}
+
+.sites.fixed .column-lastupdated {
+	width: 120px;
+}
 
 
 .sites.fixed td.column-omega_clientname {
@@ -28,24 +55,44 @@
 }
 
 /* list view */
-#the-list tr td.omega_has_divisions { color: var(--ona-groups-icon); }
-#the-list tr:has(.dashicons-groups) { background-color: var(--ona-groups-bkg); }
-#the-list tr td.omega_multi_lang { color: var(--ona-lang-icon); }
-#the-list tr:has(.dashicons-translation) { background-color: var(--ona-lang-bkg); }
-#the-list tr:has(.dashicons-flag) { background-color: var(--ona-flag-bkg); }
-#the-list tr td.omega_topbar_enable { color: var(--ona-flag-icon); }
+#the-list tr td.omega_has_divisions {
+	color: var(--ona-groups-icon);
+}
+
+#the-list tr:has(.dashicons-groups) {
+	background-color: var(--ona-groups-bkg);
+}
+
+#the-list tr td.omega_multi_lang {
+	color: var(--ona-lang-icon);
+}
+
+#the-list tr:has(.dashicons-translation) {
+	background-color: var(--ona-lang-bkg);
+}
+
+#the-list tr:has(.dashicons-flag) {
+	background-color: var(--ona-flag-bkg);
+}
+
+#the-list tr td.omega_topbar_enable {
+	color: var(--ona-flag-icon);
+}
 
 
 /* hide the primary site selector */
 #myblogs .form-table tbody {
 	display: none;
 }
+
 #myblogs .sort-my-sites {
 	display: inline-block;
 }
+
 #myblogs .sort-my-sites .button {
 	margin-right: 6px;
 }
+
 #myblogs .sort-my-sites .button.selected {
 	background-color: #2170b1;
 	color: #fff;
@@ -54,47 +101,56 @@
 #myblogs .filterSites {
 	display: inline-block;
 }
+
 #myblogs input::placeholder {
-   font-style: italic;
-   color: #aaa;
+	font-style: italic;
+	color: #aaa;
 }
 
 /* needed to remove the right border */
-#myblogs .my-sites.striped li:after{content:none}
+#myblogs .my-sites.striped li:after {
+	content: none
+}
 
 #myblogs ul.my-sites {
 	display: flex;
 	flex-flow: row wrap;
 	gap: 2px;
 }
+
 #myblogs .my-sites .icon img {
 	display: block;
 	width: 24px;
 	height: 24px;
 }
+
 #myblogs .my-sites .icon {
 	position: absolute;
 	right: 20px;
 	top: 20px;
 }
+
 #myblogs ul.my-sites .version {
 	color: #aaa;
 	margin: 0;
 	position: absolute;
 	right: 20px;
 }
+
 #myblogs .my-sites .preview {
 	position: absolute;
 	right: 20px;
 	top: 200px;
 	color: var(--ona-flag-icon);
 }
+
 #myblogs .my-sites .lang {
 	position: absolute;
 	right: 20px;
 	top: 226px;
 	color: var(--ona-lang-icon);
 }
+
 #myblogs .my-sites .divisions {
 	position: absolute;
 	right: 20px;
@@ -114,9 +170,11 @@
 #myblogs ul.my-sites li:has(.divisions) {
 	background: var(--ona-groups-bkg);
 }
+
 #myblogs ul.my-sites li:has(.lang) {
 	background: var(--ona-lang-bkg);
 }
+
 #myblogs ul.my-sites li:has(.preview) {
 	background: var(--ona-flag-bkg);
 }
@@ -147,27 +205,32 @@
 	line-height: 20px;
 	margin: 0;
 }
+
 #myblogs .projectmanager .dashicons,
 #myblogs .clientid .dashicons,
 #myblogs .clientnick .dashicons,
 #myblogs .currentyear .dashicons {
 	color: #cdcdcd;
 	margin-right: 3px;
-	
+
 }
+
 #myblogs .projectmanager {
 	color: #b06363;
 }
+
 #myblogs .clientnick {
 	font-style: italic;
 	color: #afafaf;
 	font-weight: 500;
 }
+
 #myblogs .clientid {
 	margin-top: 2px;
 	text-transform: uppercase;
 	color: #afafaf;
 }
+
 #myblogs .currentyear {
 	color: #777;
 }
@@ -176,15 +239,18 @@
 	margin-top: 6px;
 	margin-bottom: 0;
 }
+
 #myblogs .netlify {
 	margin-top: 6px;
 	margin-bottom: 0;
 }
+
 #myblogs .netlify a {
 	outline: none;
 	text-decoration: none;
 	border: none;
 }
+
 #myblogs .lastexport .label {
 	display: block;
 	text-transform: uppercase;
@@ -192,17 +258,27 @@
 	font-weight: 700;
 	color: #6ea5d2;
 }
-#myblogs .lastexport .errors {
-	background-color: red;
+
+#myblogs .flags {
 	color: #fff;
-	display: inline-block;
+	display: block;
+	width: 50%;
 	line-height: 20px;
-	padding: 4px 6px;
+	padding: 3px 6px;
 	border-radius: 6px;
 	text-transform: uppercase;
 	font-weight: 700;
-	font-size: 14px;
+	font-size: 12px;
 	margin: 8px 0;
+}
+#myblogs .flags .dashicons {
+	float: right;
+}
+#myblogs .flags.errors {
+	background-color: #d63638;
+}
+#myblogs .flags.fails {
+	background-color: #ae41ed;
 }
 
 #myblogs .my-sites .rawtime {
@@ -214,6 +290,7 @@
 	flex-flow: column wrap;
 	margin-bottom: 6px;
 }
+
 .my-sites-actions a {
 	font-weight: 700;
 	line-height: 20px;
@@ -224,10 +301,12 @@
 	margin-bottom: 3px;
 	text-transform: uppercase;
 }
+
 .my-sites-actions a:hover {
 	background-color: #2170b1;
 	color: #fff;
 }
+
 .my-sites-actions .dashicons {
 	margin-right: 3px;
 	transition: none;
@@ -237,8 +316,8 @@
 	width: 200px;
 }
 
-#wpadminbar li#wp-admin-bar-omega-local-dev {
-}
+#wpadminbar li#wp-admin-bar-omega-local-dev {}
+
 #wpadminbar li#wp-admin-bar-omega-local-dev > .ab-item {
 	background-color: #ffda00;
 	color: #000;
@@ -247,11 +326,12 @@
 	display: block;
 	padding-right: 20px;
 }
-#wpadminbar li#wp-admin-bar-omega-local-dev > .ab-item:before {	
+
+#wpadminbar li#wp-admin-bar-omega-local-dev > .ab-item:before {
 	font: normal 20px/1 dashicons;
 	content: "\f332";
 	top: 2px;
-	left:10px;
+	left: 10px;
 	color: #000;
 	margin-right: 14px;
 }
@@ -262,58 +342,71 @@
 	content: "\f325";
 	top: 2px;
 }
+
 #wp-admin-bar-omega-network ul.ab-submenu li {
-	margin-bottom: 6px;	
+	margin-bottom: 6px;
 }
+
 #wpadminbar .quicklinks .menupop ul li {
 	float: left;
 	display: block;
 }
+
 #wp-admin-bar-omega-sites-list-name > .ab-item:before,
 #wp-admin-bar-omega-sites-list-updated > .ab-item:before {
 	content: "\f203";
 }
-#wp-admin-bar-omega-users > .ab-item:before {	
+
+#wp-admin-bar-omega-users > .ab-item:before {
 	content: "\f110";
 }
-#wp-admin-bar-omega-plugins > .ab-item:before {	
+
+#wp-admin-bar-omega-plugins > .ab-item:before {
 	content: "\f106";
 }
+
 #wp-admin-bar-omega-migration > .ab-item:before {
 	content: "\f17e";
 }
+
 #wp-admin-bar-omega-addsite > .ab-item:before {
 	content: "\f502";
 }
+
 #wp-admin-bar-omega-export > .ab-item:before {
 	content: "\f316";
 }
+
 #wp-admin-bar-omega-sites-grid-name > .ab-item:before,
 #wp-admin-bar-omega-sites-grid-updated > .ab-item:before {
 	content: "\f509";
 }
 
 
-@media screen and (width <= 480px) {
+@media screen and (width <=480px) {
 	#myblogs ul.my-sites li {
 		width: 160px;
 		padding: 12px;
 	}
+
 	#myblogs ul.my-sites .version {
 		position: relative;
 		float: right;
 		right: 5px;
 	}
+
 	#myblogs .my-sites .icon {
 		position: relative;
 		float: left;
 		top: 0;
 		right: 0;
 	}
+
 	#myblogs .projectmanager,
 	#myblogs .clientid {
 		clear: both;
 	}
+
 	#myblogs .my-sites .dashicons-flag {
 		position: relative;
 		float: right;
