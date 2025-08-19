@@ -1,6 +1,7 @@
 /* @override 
 	https://omegastaging.local/wp-content/plugins/omega-network-admin/ona.css?*
 	https://agcbio.omegastaging.local/wp-content/plugins/omega-network-admin/ona.css?*
+	https://usi-demo.omegastaging.local/wp-content/plugins/omega-network-admin/ona.css?*
 */
 
 :root {
@@ -165,6 +166,7 @@
 	background-color: #fff;
 	display: block;
 	line-height: 14px;
+	position: relative;
 }
 
 #myblogs ul.my-sites li:has(.divisions) {
@@ -275,10 +277,10 @@
 	float: right;
 }
 #myblogs .flags.errors {
-	background-color: #d63638;
+	background-color: #f11919;
 }
 #myblogs .flags.fails {
-	background-color: #ae41ed;
+	background-color: #f11919;
 }
 
 #myblogs .my-sites .rawtime {
@@ -348,8 +350,6 @@
 }
 
 #wpadminbar .quicklinks .menupop ul li {
-	float: left;
-	display: block;
 }
 
 #wp-admin-bar-omega-sites-list-name > .ab-item:before,
@@ -381,12 +381,30 @@
 #wp-admin-bar-omega-sites-grid-updated > .ab-item:before {
 	content: "\f509";
 }
-
+@media screen and (width <=960px) {
+	#screen-meta-links,
+	#wpbody-content h1 {
+		display: none;
+	}
+}
 
 @media screen and (width <=480px) {
+	#screen-meta-links,
+	#wpbody-content h1 {
+		display: none;
+	}
+	#myblogs .sort-my-sites .filterSites {
+		margin-bottom: 12px;
+	}
+	#myblogs .sort-my-sites .button {
+		padding: 0 8px;
+		min-height: 16px;
+		line-height: 26px;
+	}
+	
 	#myblogs ul.my-sites li {
-		width: 160px;
-		padding: 12px;
+/*		width: 172px;*/
+		width: 100%;
 	}
 
 	#myblogs ul.my-sites .version {
