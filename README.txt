@@ -18,6 +18,7 @@ https://omegabenefits.net/omega-template-system/
 
 = 1.3.2 =
 * show Redirect Fail status on site tiles
+* polished mobile CSS
 
 = 1.3.1 =
 * show client nickname on tiles if exists
