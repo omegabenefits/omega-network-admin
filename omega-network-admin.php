@@ -3,7 +3,7 @@
  *  Plugin Name: OMEGA Network Admin
  *	Plugin URI: https://omegabenefits.net
  *  Description: For Multi-Site Networks only! Organizes site listings for easier management
- *  Version: 1.3.2
+ *  Version: 1.3.3
  *  Author: Omega Benefits
  *	Author URI: https://omegabenefits.net
  *  License: GPL-2.0+
@@ -108,6 +108,7 @@ function omeganetwork_add_sites_column_heading( $columns ) {
 		'omega_topbar_enable'	=> "Preview",
 		'omega_multi_lang'	    => "Lang",
 		'omega_has_divisions'	=> "Divis",
+		'omega_archive_toggle'	=> "Arch",
 		'lastupdated'			=> 'Last Updated',
 		// 'blog_id'				=> 'Subsite ID',
 		// 'public'				=> 'Public',
@@ -174,6 +175,9 @@ function omeganetwork_columns_content( $column_name, $blog_id ) {
 			break;
 			case "omega_has_divisions":
 				$content = ( empty( $option ) ) ? '-' : '<span class="dashicons dashicons-groups"></span>';
+			break;
+			case "omega_archive_toggle":
+				$content = ( empty( $option ) ) ? '-' : '<span class="dashicons dashicons-backup"></span>';
 			break;
 			case "omega_last_export":
 				$content = ( empty( $option ) ) ? "-" : human_time_diff( strtotime( date( "Y-m-d H:i:s" ) ) , strtotime( $option ) ) . " ago <br />". $option;
@@ -248,6 +252,7 @@ function ona_sort_my_sites_tiles($blogs) {
 		$blog->lang = get_blog_option( $blog->userblog_id, 'omega_multi_lang' );
 		$blog->divisions = get_blog_option( $blog->userblog_id, 'omega_has_divisions' );
 		$blog->year = get_blog_option( $blog->userblog_id, 'omega_current_year' );
+		$blog->archive = get_blog_option( $blog->userblog_id, 'omega_archive_toggle' );
 		
 		// $extblogs[$blog->userblog_id] = $blog;
 		$extblogs[] = $blog;
@@ -390,6 +395,10 @@ function ona_site_meta( $settings_html, $blog_obj ) {
 		// show icon if has any divisions
 		if ( get_blog_option( $blog_obj->userblog_id, 'omega_has_divisions' ) ) {
 			$html .= "<span class='divisions dashicons dashicons-groups'></span>";
+		}
+		// show icon if archive active
+		if ( get_blog_option( $blog_obj->userblog_id, 'omega_archive_toggle' ) ) {
+			$html .= "<span class='archive dashicons dashicons-backup'></span>";
 		}
 
 		$pm = get_blog_option( $blog_obj->userblog_id, 'omega_projectmanager' );
