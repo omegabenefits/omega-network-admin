@@ -87,48 +87,56 @@
 	display: none;
 }
 
-#myblogs .sort-my-sites {
+#modify-output {
 	display: inline-block;
 }
 
-#myblogs .sort-my-sites .button {
+#modify-output .button {
 	margin-right: 6px;
 }
 
-#myblogs .sort-my-sites .button span {
+#modify-output .button span {
 	font-weight: 700;
 }
 
-#myblogs .sort-my-sites .button.sortby[selected] {
+#modify-output .button.sortby[selected] {
 	background-color: #01723f;
 	color: #fff;
 	font-weight: 700;
 }
 
-#myblogs .sort-my-sites .button.filterby[selected] {
+#modify-output .button.filterby[selected] {
 	background-color: #2170b1;
 	color: #fff;
 	font-weight: 700;
 }
 
-#myblogs .sort-my-sites .button.sortby {
+#modify-output .button.sortby {
 	border-color: #01723f;
 	color: #01723f;
 }
 
-#myblogs .filterSites,
-#myblogs .sortSites {
+#modify-output .button.clearfilter {
+	border-color: #c8c8c8;
+	color: #fff;
+	font-style: italic;
+	background-color: #ddd;
+}
+
+#modify-output .filterSites,
+#modify-output .sortSites {
 	display: inline-block;
 	margin-bottom: 6px;
 }
-#myblogs .filterSites > .label,
-#myblogs .sortSites > .label {
+
+#modify-output .filterSites > .label,
+#modify-output.sortSites > .label {
 	display: inline-block;
 	line-height: 30px;
 	min-width: 72px;
 }
 
-#myblogs input::placeholder {
+#modify-output input::placeholder {
 	font-style: italic;
 	color: #aaa;
 }
@@ -417,7 +425,7 @@
 }
 
 #wpbody-content h1 > .site-count {
-	color: #bbb;
+	color: #aaa;
 }
 
 @media screen and (width <=960px) {
@@ -435,11 +443,11 @@
 		display: none;
 	}
 
-	#myblogs .sort-my-sites .filterSites {
+	#modify-output .filterSites {
 		margin-bottom: 12px;
 	}
 
-	#myblogs .sort-my-sites .button {
+	#modify-output .button {
 		padding: 0 8px;
 		min-height: 16px;
 		line-height: 26px;

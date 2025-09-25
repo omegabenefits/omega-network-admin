@@ -280,7 +280,7 @@ function ona_sort_my_sites_tiles($blogs) {
 				case "preview":
 					if ( !wp_validate_boolean( $blog->preview ) ) unset( $extblogs[$blog_id] );
 					break;
-				case "live":
+				case "current":
 					if ( wp_validate_boolean( $blog->preview ) ) unset( $extblogs[$blog_id] );
 					break;
 				case "errors":
@@ -605,7 +605,7 @@ function omega_network_admin_bar_local( $admin_bar ) {
 // renders sorting buttons on my sites grid page
 add_action( 'myblogs_allblogs_options', function() {
 	
-	echo "<div class='sort-my-sites'>";
+	echo "<div id='modify-output'>";
 	$sortby = ( $_GET['sortby'] ) ?? false;
 	$filterby = ( $_GET['filterby'] ) ?? false;
 	
@@ -615,9 +615,9 @@ add_action( 'myblogs_allblogs_options', function() {
 	</div>
 	<?php
 	
-	echo "<a class='button button-secondary filterby' href='".add_query_arg( 'filterby', 'live' )."' ".selected( $filterby, "live", false ).">Filter by <span>Live</span></a>";
-	
 	echo "<a class='button button-secondary filterby' href='".add_query_arg( 'filterby', 'preview' )."' ".selected( $filterby, "preview", false ).">Filter by <span>Preview</span></a>";
+	
+	echo "<a class='button button-secondary filterby' href='".add_query_arg( 'filterby', 'current' )."' ".selected( $filterby, "current", false ).">Filter by <span>Current</span></a>";
 	
 	echo "<a class='button button-secondary filterby' href='".add_query_arg( 'filterby', 'archive' )."' ".selected( $filterby, "archive", false ).">Filter by <span>Archive</span></a>";
 	
@@ -626,6 +626,8 @@ add_action( 'myblogs_allblogs_options', function() {
 	echo "<a class='button button-secondary filterby' href='".add_query_arg( 'filterby', 'divisions' )."' ".selected( $filterby, "divisions", false ).">Filter by <span>Divisions</span></a>";
 	
 	echo "<a class='button button-secondary filterby' href='".add_query_arg( 'filterby', 'errors' )."' ".selected( $filterby, "errors", false ).">Filter by <span>Errors</span></a>";
+	
+	echo "<a class='button button-secondary clearfilter' href='".remove_query_arg( 'filterby' )."'>Clear Filter</a>";
 	
 	?>
 	<br/>
