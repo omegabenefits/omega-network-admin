@@ -95,6 +95,23 @@
 	margin-right: 6px;
 }
 
+#modify-output .button.sortby {
+	border-color: #01723f;
+	color: #01723f;
+}
+#modify-output .button.filterby {
+	border-color: #2170b1;
+	color: #2170b1;
+}
+
+
+#modify-output .button.filterby:hover {
+	background-color: #e0e8ef;
+}
+#modify-output .button.sortby:hover {
+	background-color: #dbe7e1;
+}
+
 #modify-output .button span {
 	font-weight: 700;
 }
@@ -111,16 +128,13 @@
 	font-weight: 700;
 }
 
-#modify-output .button.sortby {
-	border-color: #01723f;
-	color: #01723f;
-}
 
 #modify-output .button.clearfilter {
 	border-color: #c8c8c8;
 	color: #fff;
 	font-style: italic;
-	background-color: #ddd;
+	background-color: #cdcdcd;
+	font-weight: 600;
 }
 
 #modify-output .filterSites,
@@ -130,7 +144,7 @@
 }
 
 #modify-output .filterSites > .label,
-#modify-output.sortSites > .label {
+#modify-output .sortSites > .label {
 	display: inline-block;
 	line-height: 30px;
 	min-width: 72px;
