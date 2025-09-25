@@ -57,7 +57,9 @@
 		$('#filterSites').select();
 
 		// show total sites visible based on current filters
-		var count = $('ul.my-sites li:visible').length;
-		$('h1.wp-heading-inline').append(' <span class="site-count">[' + count + ']</span>');
+		if ($('body').hasClass('my-sites-php')) {
+			var count = $('ul.my-sites li:visible').length;
+			$('h1.wp-heading-inline').append(' <span class="site-count">[' + count + ']</span>');
+		}
 	});
 })(jQuery);

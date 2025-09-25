@@ -93,6 +93,7 @@
 
 #modify-output .button {
 	margin-right: 6px;
+		margin-bottom: 6px;
 }
 
 #modify-output .button.sortby {
@@ -140,7 +141,6 @@
 #modify-output .filterSites,
 #modify-output .sortSites {
 	display: inline-block;
-	margin-bottom: 6px;
 }
 
 #modify-output .filterSites > .label,
