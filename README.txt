@@ -4,7 +4,7 @@ Donate link: https://omegabenefits.net
 Tags: admin
 Requires at least: 6.0
 Tested up to: 6.6
-Stable tag: 1.3.3
+Stable tag: 1.3.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -15,6 +15,10 @@ For Multi-Site Networks only! Organizes site listings for easier management
 https://omegabenefits.net/omega-template-system/
 
 == Changelog ==
+
+= 1.3.4 =
+* new filtering buttons to show only selected params (can be combined with sort)
+* show current number of sites visible (according to filtering rules)
 
 = 1.3.3 =
 * show Archive toggle status on site tiles and column lists
