@@ -1,7 +1,5 @@
 /* @override 
 	https://omegastaging.local/wp-content/plugins/omega-network-admin/ona.css?*
-	https://agcbio.omegastaging.local/wp-content/plugins/omega-network-admin/ona.css?*
-	https://usi-demo.omegastaging.local/wp-content/plugins/omega-network-admin/ona.css?*
 */
 
 :root {
@@ -97,13 +95,37 @@
 	margin-right: 6px;
 }
 
-#myblogs .sort-my-sites .button.selected {
-	background-color: #2170b1;
-	color: #fff;
+#myblogs .sort-my-sites .button span {
+	font-weight: 700;
 }
 
-#myblogs .filterSites {
+#myblogs .sort-my-sites .button.sortby[selected] {
+	background-color: #01723f;
+	color: #fff;
+	font-weight: 700;
+}
+
+#myblogs .sort-my-sites .button.filterby[selected] {
+	background-color: #2170b1;
+	color: #fff;
+	font-weight: 700;
+}
+
+#myblogs .sort-my-sites .button.sortby {
+	border-color: #01723f;
+	color: #01723f;
+}
+
+#myblogs .filterSites,
+#myblogs .sortSites {
 	display: inline-block;
+	margin-bottom: 6px;
+}
+#myblogs .filterSites > .label,
+#myblogs .sortSites > .label {
+	display: inline-block;
+	line-height: 30px;
+	min-width: 72px;
 }
 
 #myblogs input::placeholder {
@@ -392,6 +414,10 @@
 #wp-admin-bar-omega-sites-grid-name > .ab-item:before,
 #wp-admin-bar-omega-sites-grid-updated > .ab-item:before {
 	content: "\f509";
+}
+
+#wpbody-content h1 > .site-count {
+	color: #bbb;
 }
 
 @media screen and (width <=960px) {

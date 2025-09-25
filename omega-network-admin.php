@@ -3,7 +3,7 @@
  *  Plugin Name: OMEGA Network Admin
  *	Plugin URI: https://omegabenefits.net
  *  Description: For Multi-Site Networks only! Organizes site listings for easier management
- *  Version: 1.3.3
+ *  Version: 1.3.4
  *  Author: Omega Benefits
  *	Author URI: https://omegabenefits.net
  *  License: GPL-2.0+
@@ -233,6 +233,7 @@ function omeganetwork_columns_content( $column_name, $blog_id ) {
 add_action( 'manage_sites_custom_column', 'omeganetwork_columns_content', 10, 2 );
 
 // sorts my-sites tiles
+add_filter('get_blogs_of_user','ona_sort_my_sites_tiles', 10, 1 );
 function ona_sort_my_sites_tiles($blogs) {
 	if ( empty( $blogs ) || !is_array( $blogs ) ) return $blogs;
 	// remove multisite primary first
@@ -253,13 +254,44 @@ function ona_sort_my_sites_tiles($blogs) {
 		$blog->divisions = get_blog_option( $blog->userblog_id, 'omega_has_divisions' );
 		$blog->year = get_blog_option( $blog->userblog_id, 'omega_current_year' );
 		$blog->archive = get_blog_option( $blog->userblog_id, 'omega_archive_toggle' );
+		$blog->exporterrors = get_blog_option( $blog->userblog_id, 'omega_export_404s' );
+		$blog->redirecterrors = get_blog_option( $blog->userblog_id, 'omega_redirect_fails' );
 		
 		// $extblogs[$blog->userblog_id] = $blog;
 		$extblogs[] = $blog;
 	}
 	
+	$sortby = $_GET['sortby'] ?? false;
+	$filterby = $_GET['filterby'] ?? false;
+	
+	// filter by arg FIRST, this removes sites from $extblogs to be sorted following
+	if ( $filterby ) {
+		foreach ( $extblogs as $blog_id => $blog ) {
+			switch ( $filterby ) {
+				case "divisions":
+					if ( !wp_validate_boolean( $blog->divisions ) ) unset( $extblogs[$blog_id] );
+					break;
+				case "archive":
+					if ( !wp_validate_boolean( $blog->archive ) ) unset( $extblogs[$blog_id] );
+					break;
+				case "lang":
+					if ( !wp_validate_boolean( $blog->lang ) ) unset( $extblogs[$blog_id] );
+					break;
+				case "preview":
+					if ( !wp_validate_boolean( $blog->preview ) ) unset( $extblogs[$blog_id] );
+					break;
+				case "live":
+					if ( wp_validate_boolean( $blog->preview ) ) unset( $extblogs[$blog_id] );
+					break;
+				case "errors":
+					if ( !wp_validate_boolean( $blog->exporterrors ) && !wp_validate_boolean( $blog->redirecterrors ) ) unset( $extblogs[$blog_id] );
+					break;
+			}
+		}
+	}
+	
 	// sort by LAST UPDATED
-	if ( isset( $_GET['orderby'] ) && $_GET['orderby'] == 'lastupdated' ) {
+	if ( $sortby == 'lastupdated' ) {
 		usort( $extblogs, function( $a, $b ) {
 			return intval( strtotime($b->updated) ) <=> intval( strtotime($a->updated) );
 		});
@@ -267,42 +299,48 @@ function ona_sort_my_sites_tiles($blogs) {
 	}
 	
 	// sort by LAST STATIC EXPORT
-	if ( isset( $_GET['orderby'] ) && $_GET['orderby'] == 'omega_last_export' ) {
+	if ( $sortby == 'omega_last_export' ) {
 		usort( $extblogs, function( $a, $b ) {
 			return intval( strtotime($b->export) ) <=> intval( strtotime($a->export) );
 		});
 		return $extblogs; // replace with our sort
 	}
 	
-	
 	// sort by TEMPLATE SYSTEM VERSION
-	if ( isset( $_GET['orderby'] ) && $_GET['orderby'] == 'omega_system_version' ) {
+	if ( $sortby == 'omega_system_version' ) {
 		usort( $extblogs, function( $a, $b ) {
 			return floatval( $b->system ) <=> floatval( $a->system );
 		});
 		return $extblogs; // replace with our sort
 	}
 	
-	// sort by CURRENT YEAR
-	if ( isset( $_GET['orderby'] ) && $_GET['orderby'] == 'omega_current_year' ) {
+	// sort by ARCHIVE STATUS
+	if ( $sortby == 'omega_archive_toggle' ) {
 		usort( $extblogs, function( $a, $b ) {
-			return floatval( $b->year ) <=> floatval( $a->year );
+			return floatval( $b->archive ) <=> floatval( $a->archive );
+		});
+		return $extblogs; // replace with our sort
+	}
+	
+	// sort by LANGUAGE TRANSLATE
+	if ( $sortby == 'omega_multi_lang' ) {
+		usort( $extblogs, function( $a, $b ) {
+			return floatval( $b->lang ) <=> floatval( $a->lang );
 		});
 		return $extblogs; // replace with our sort
 	}
 	
 	// sort by PROJECT MANAGER	
-	if ( isset( $_GET['orderby'] ) && $_GET['orderby'] == 'projectmanager' ) {
+	if ( $sortby == 'projectmanager' ) {
 		uasort( $extblogs, function($a, $b) { 
-			return strcasecmp($b->pm,$a->pm);
+			return strcasecmp($a->pm,$b->pm);
 		});
 		return $extblogs;
 	}
 	
-	if ( isset( $_GET['orderby'] ) && $_GET['orderby'] == 'name' ) {
+	if ( $sortby == 'name' ) {
 		// doing this by default anyways
 	}
-	
 	
 	// sorts my sites by blogname alphabetically (default is by site id, thus order of creation)
 	uasort( $extblogs, function($a, $b) { 
@@ -310,7 +348,6 @@ function ona_sort_my_sites_tiles($blogs) {
 	});
 	return $extblogs;
 }
-add_filter('get_blogs_of_user','ona_sort_my_sites_tiles', 10, 1 );
 
 // default site query is just 100, make it bigger
 add_filter( 'ms_sites_list_table_query_args', function( $args ) {
@@ -468,7 +505,7 @@ function omega_network_admin_bar_items( $admin_bar ) {
 			array(
 				'id'     => 'omega-network',
 				'title'  => 'Network',
-				'href'   => admin_url( 'my-sites.php?orderby=name' ),
+				'href'   => admin_url( 'my-sites.php?sortby=name' ),
 			)
 		);
 		$admin_bar->add_node(
@@ -492,7 +529,7 @@ function omega_network_admin_bar_items( $admin_bar ) {
 				'parent' => 'omega-network',
 				'id'     => 'omega-sites-grid-updated',
 				'title'  => 'Grid by Last Updated',
-				'href'   => admin_url( 'my-sites.php?orderby=lastupdated' ),
+				'href'   => admin_url( 'my-sites.php?sortby=lastupdated' ),
 			)
 		);
 		$admin_bar->add_node(
@@ -500,7 +537,7 @@ function omega_network_admin_bar_items( $admin_bar ) {
 				'parent' => 'omega-network',
 				'id'     => 'omega-sites-grid-name',
 				'title'  => 'Grid Layout by Name',
-				'href'   => admin_url( 'my-sites.php?orderby=name' ),
+				'href'   => admin_url( 'my-sites.php?sortby=name' ),
 			)
 		);
 
@@ -569,31 +606,43 @@ function omega_network_admin_bar_local( $admin_bar ) {
 add_action( 'myblogs_allblogs_options', function() {
 	
 	echo "<div class='sort-my-sites'>";
-	$orderby = ( $_GET['orderby'] ) ?? false;
+	$sortby = ( $_GET['sortby'] ) ?? false;
+	$filterby = ( $_GET['filterby'] ) ?? false;
 	
 	?>
 	<div class="filterSites">
-		<span class="filtertext">FILTER</span><span style="vertical-align:middle; margin-right: 4px; margin-left: 4px;" class="dashicons dashicons-search"></span><input type='text' id='filterSites' placeholder='type client name'>
+		<div class="label">FILTER<span style="vertical-align:middle; margin-right: 4px; margin-left: 4px;" class="dashicons dashicons-search"></span></div><input type='text' id='filterSites' placeholder='type client name'>
 	</div>
 	<?php
-
-	$selected = ( $orderby == 'name' || $orderby === false ) ? " selected" : "";		// basically name should always be highlighted, as is default (even without $_GET)
-	echo "<a class='button button-secondary{$selected}' href='".add_query_arg( 'orderby', 'name' )."'>Sort by Name</a>";
-
-	$selected = ( $orderby == 'lastupdated' ) ? " selected" : "";
-	echo "<a class='button button-secondary{$selected}' href='".add_query_arg( 'orderby', 'lastupdated' )."'>Sort by Latest Updated</a>";
-
-	$selected = ( $orderby == 'omega_last_export' ) ? " selected" : "";
-	echo "<a class='button button-secondary{$selected}' href='".add_query_arg( 'orderby', 'omega_last_export' )."'>Sort by Last Export</a>";
 	
-	$selected = ( $orderby == 'omega_current_year' ) ? " selected" : "";
-	echo "<a class='button button-secondary{$selected}' href='".add_query_arg( 'orderby', 'omega_current_year' )."'>Sort by Current Year</a>";
+	echo "<a class='button button-secondary filterby' href='".add_query_arg( 'filterby', 'live' )."' ".selected( $filterby, "live", false ).">Filter by <span>Live</span></a>";
 	
-	$selected = ( $orderby == 'projectmanager' ) ? " selected" : "";
-	echo "<a class='button button-secondary{$selected}' href='".add_query_arg( 'orderby', 'projectmanager' )."'>Sort by Project Manager</a>";
+	echo "<a class='button button-secondary filterby' href='".add_query_arg( 'filterby', 'preview' )."' ".selected( $filterby, "preview", false ).">Filter by <span>Preview</span></a>";
 	
-	// $selected = ( $orderby == 'omega_system_version' ) ? " selected" : "";
-	// echo "<a class='button button-secondary{$selected}' href='".add_query_arg( 'orderby', 'omega_system_version' )."'>Sort by System Version</a>";
+	echo "<a class='button button-secondary filterby' href='".add_query_arg( 'filterby', 'archive' )."' ".selected( $filterby, "archive", false ).">Filter by <span>Archive</span></a>";
+	
+	echo "<a class='button button-secondary filterby' href='".add_query_arg( 'filterby', 'lang' )."' ".selected( $filterby, "lang", false ).">Filter by <span>Translation</span></a>";
+	
+	echo "<a class='button button-secondary filterby' href='".add_query_arg( 'filterby', 'divisions' )."' ".selected( $filterby, "divisions", false ).">Filter by <span>Divisions</span></a>";
+	
+	echo "<a class='button button-secondary filterby' href='".add_query_arg( 'filterby', 'errors' )."' ".selected( $filterby, "errors", false ).">Filter by <span>Errors</span></a>";
+	
+	?>
+	<br/>
+	<div class="sortSites">
+		<div class="label">ORDER<span style="vertical-align:middle; margin-right: 4px; margin-left: 4px;" class="dashicons dashicons-arrow-down-alt"></span></div>
+	</div>
+	<?php
+	
+	echo "<a class='button button-secondary sortby' href='".add_query_arg( 'sortby', 'name' )."' ".selected( $sortby, "name", false ).">Sort by <span>Name</span></a>";
+	
+	echo "<a class='button button-secondary sortby' href='".add_query_arg( 'sortby', 'lastupdated' )."' ".selected( $sortby, "lastupdated", false ).">Sort by <span>Last Updated</span></a>";
+	
+	echo "<a class='button button-secondary sortby' href='".add_query_arg( 'sortby', 'omega_last_export' )."' ".selected( $sortby, "omega_last_export", false ).">Sort by <span>Last Export</span></a>";
+	
+	echo "<a class='button button-secondary sortby' href='".add_query_arg( 'sortby', 'projectmanager' )."' ".selected( $sortby, "projectmanager", false ).">Sort by <span>PM</span></a>";
+	
+	// echo "<a class='button button-secondary sortby' href='".add_query_arg( 'sortby', 'omega_system_version', admin_url( 'my-sites.php' ) )."' ".selected( $sortby, "omega_system_version", false ).">Sort by <span>System Version</span></a>";
 
 	echo "</div>";
 

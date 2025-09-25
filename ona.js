@@ -41,9 +41,9 @@
 			$('ul.my-sites li').filter(function() {
 				$(this).toggle(
 					$(this)
-						.text()
-						.toLowerCase()
-						.indexOf(value) > -1
+					.text()
+					.toLowerCase()
+					.indexOf(value) > -1
 				);
 			});
 		});
@@ -55,5 +55,9 @@
 
 		// make the filter field ready for text entry upon load
 		$('#filterSites').select();
+
+		// show total sites visible based on current filters
+		var count = $('ul.my-sites li:visible').length;
+		$('h1.wp-heading-inline').append(' <span class="site-count">[' + count + ']</span>');
 	});
 })(jQuery);
