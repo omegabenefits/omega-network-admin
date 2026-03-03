@@ -3,7 +3,7 @@
  *  Plugin Name: OMEGA Network Admin
  *	Plugin URI: https://omegabenefits.net
  *  Description: For Multi-Site Networks only! Organizes site listings for easier management
- *  Version: 1.3.4
+ *  Version: 1.3.5
  *  Author: Omega Benefits
  *	Author URI: https://omegabenefits.net
  *  License: GPL-2.0+
