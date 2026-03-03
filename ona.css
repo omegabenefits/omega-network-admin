@@ -10,6 +10,7 @@
 	--ona-groups-icon: #4f1dc3;
 	--ona-groups-bkg: #eeecff;
 	--ona-archive-icon: #942300;
+	--ona-chatbot-icon: #eb00c9;
 }
 
 /**/
@@ -93,13 +94,14 @@
 
 #modify-output .button {
 	margin-right: 6px;
-		margin-bottom: 6px;
+	margin-bottom: 6px;
 }
 
 #modify-output .button.sortby {
 	border-color: #01723f;
 	color: #01723f;
 }
+
 #modify-output .button.filterby {
 	border-color: #2170b1;
 	color: #2170b1;
@@ -109,6 +111,7 @@
 #modify-output .button.filterby:hover {
 	background-color: #e0e8ef;
 }
+
 #modify-output .button.sortby:hover {
 	background-color: #dbe7e1;
 }
@@ -211,6 +214,14 @@
 	right: 20px;
 	top: 270px;
 	color: var(--ona-archive-icon);
+}
+
+#myblogs .my-sites .chatbot {
+	position: absolute;
+	right: 20px;
+	top: 292px;
+	/* top +22 px than above */
+	color: var(--ona-chatbot-icon);
 }
 
 #myblogs ul.my-sites li {

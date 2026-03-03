@@ -109,6 +109,7 @@ function omeganetwork_add_sites_column_heading( $columns ) {
 		'omega_multi_lang'	    => "Lang",
 		'omega_has_divisions'	=> "Divis",
 		'omega_archive_toggle'	=> "Arch",
+		// 'omega_chatbot'			=> "ChatBot",
 		'lastupdated'			=> 'Last Updated',
 		// 'blog_id'				=> 'Subsite ID',
 		// 'public'				=> 'Public',
@@ -255,7 +256,9 @@ function ona_sort_my_sites_tiles($blogs) {
 		$blog->year = get_blog_option( $blog->userblog_id, 'omega_current_year' );
 		$blog->archive = get_blog_option( $blog->userblog_id, 'omega_archive_toggle' );
 		$blog->exporterrors = get_blog_option( $blog->userblog_id, 'omega_export_404s' );
-		$blog->redirecterrors = get_blog_option( $blog->userblog_id, 'omega_redirect_fails' );
+		$blog->redirecterrors = get_blog_option( $blog->userblog_id, 'omega_redirect_fails' );		
+		$activeplugins = get_blog_option( $blog->userblog_id, 'active_plugins', array() ); // return empty array if doesn't exist!
+		$blog->chatbot = in_array( 'omega-cody/omega-cody.php', $activeplugins );
 		
 		// $extblogs[$blog->userblog_id] = $blog;
 		$extblogs[] = $blog;
@@ -280,6 +283,9 @@ function ona_sort_my_sites_tiles($blogs) {
 				case "preview":
 					if ( !wp_validate_boolean( $blog->preview ) ) unset( $extblogs[$blog_id] );
 					break;
+				case "chatbot":
+					if ( !wp_validate_boolean( $blog->chatbot ) ) unset( $extblogs[$blog_id] );
+				break;
 				case "current":
 					if ( wp_validate_boolean( $blog->preview ) ) unset( $extblogs[$blog_id] );
 					break;
@@ -326,6 +332,14 @@ function ona_sort_my_sites_tiles($blogs) {
 	if ( $sortby == 'omega_multi_lang' ) {
 		usort( $extblogs, function( $a, $b ) {
 			return floatval( $b->lang ) <=> floatval( $a->lang );
+		});
+		return $extblogs; // replace with our sort
+	}
+	
+	// sort by CHATBOT LOGS
+	if ( $sortby == 'omega_chatbot' ) {
+		usort( $extblogs, function( $a, $b ) {
+			return floatval( $b->chatbot ) <=> floatval( $a->chatbot );
 		});
 		return $extblogs; // replace with our sort
 	}
@@ -436,6 +450,12 @@ function ona_site_meta( $settings_html, $blog_obj ) {
 		// show icon if archive active
 		if ( get_blog_option( $blog_obj->userblog_id, 'omega_archive_toggle' ) ) {
 			$html .= "<span class='archive dashicons dashicons-backup'></span>";
+		}
+		
+		// show icon if chatbot logs plugin active
+		$activeplugins = get_blog_option( $blog_obj->userblog_id, 'active_plugins', array() ); // return empty array if doesn't exist!
+		if ( in_array( 'omega-cody/omega-cody.php', $activeplugins ) ) {
+			$html .= "<span class='chatbot dashicons dashicons-format-chat'></span>";
 		}
 
 		$pm = get_blog_option( $blog_obj->userblog_id, 'omega_projectmanager' );
@@ -626,6 +646,8 @@ add_action( 'myblogs_allblogs_options', function() {
 	echo "<a class='button button-secondary filterby' href='".add_query_arg( 'filterby', 'divisions' )."' ".selected( $filterby, "divisions", false ).">Filter by <span>Divisions</span></a>";
 	
 	echo "<a class='button button-secondary filterby' href='".add_query_arg( 'filterby', 'errors' )."' ".selected( $filterby, "errors", false ).">Filter by <span>Errors</span></a>";
+	
+	echo "<a class='button button-secondary filterby' href='".add_query_arg( 'filterby', 'chatbot' )."' ".selected( $filterby, "chatbot", false ).">Filter by <span>ChatBot</span></a>";
 	
 	echo "<a class='button button-secondary clearfilter' href='".remove_query_arg( 'filterby' )."'>Clear Filter</a>";
 	
