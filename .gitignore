@@ -2,6 +2,9 @@
 composer.phar
 vendor/.git
 
+/release/dist/
+/release/deploy.env
+
 # RAY debugging
 ray.php
 
