@@ -19,6 +19,7 @@ https://omegabenefits.net/omega-template-system/
 = 1.4 =
 * update PluginUpdateChecker lib
 * add routine to force update check for plugins that are NOT network-activated, but may be active on some sites
+* new dashboard widget for network-wide tool actions
 
 = 1.3.5 =
 * filter sites by ChatBot Logs plugin active
