@@ -3,7 +3,7 @@
  *  Plugin Name: OMEGA Network Admin
  *	Plugin URI: https://omegabenefits.net
  *  Description: For Multi-Site Networks only! Organizes site listings for easier management
- *  Version: 1.3.5
+ *  Version: 1.4
  *  Author: Omega Benefits
  *	Author URI: https://omegabenefits.net
  *  License: GPL-2.0+
@@ -14,7 +14,7 @@
  /**
   * 3rd-party class for our self-hosted updates
   */
- require_once plugin_dir_path( __FILE__ ) . "plugin-update-checker/plugin-update-checker.php";
+ require_once plugin_dir_path( __FILE__ ) . "lib/plugin-update-checker/plugin-update-checker.php";
  use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
  $MyUpdateChecker = PucFactory::buildUpdateChecker(
 	 "https://omegabenefits.net/wp-update-server/?action=get_metadata&slug=omega-network-admin", //Metadata URL.
@@ -726,3 +726,44 @@ function export_sites_csv() {
 	@readfile( $filepath );
 	unlink( $filepath );
 }
+
+// trigger PUC update checking for all our custom plugins, as they otherwise would not get checked if they're not network-active, but only subsite-active!!
+function network_plugin_register_internal_updates() {
+	if ( ! is_admin() && ! wp_doing_cron() && ! ( defined( 'WP_CLI' ) && WP_CLI ) ) {
+		return;
+	}
+
+	require_once plugin_dir_path( __FILE__ ) . 'lib/plugin-update-checker/plugin-update-checker.php';
+
+	$plugins = array(
+		'omega-system' => array(
+			'file' => WP_PLUGIN_DIR . '/omega-system/omega-system.php',
+		),
+		'omega-cody' => array(
+			'file' => WP_PLUGIN_DIR . '/omega-cody/omega-cody.php',
+		),
+		'omega-dgt' => array(
+			'file' => WP_PLUGIN_DIR . '/omega-dgt/omega-dgt.php',
+		),
+		'omega-feedback' => array(
+			'file' => WP_PLUGIN_DIR . '/omega-feedback/omega-feedback.php',
+		),
+	);
+
+	foreach ( $plugins as $slug => $plugin ) {
+		if ( ! file_exists( $plugin['file'] ) ) {
+			continue;
+		}
+
+		if ( apply_filters( "puc_is_slug_in_use-$slug", false ) ) {
+			continue;
+		}
+
+		PucFactory::buildUpdateChecker(
+			"https://omegabenefits.net/wp-update-server/?action=get_metadata&slug=".$slug,
+			$plugin['file'],
+			$slug
+		);
+	}
+}
+add_action( 'plugins_loaded', 'network_plugin_register_internal_updates', 1 );
