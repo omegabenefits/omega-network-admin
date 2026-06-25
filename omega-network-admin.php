@@ -728,7 +728,7 @@ function export_sites_csv() {
 }
 
 // trigger PUC update checking for all our custom plugins, as they otherwise would not get checked if they're not network-active, but only subsite-active!!
-function network_plugin_register_internal_updates() {
+function ona_register_internal_updates() {
 	if ( ! is_admin() && ! wp_doing_cron() && ! ( defined( 'WP_CLI' ) && WP_CLI ) ) {
 		return;
 	}
@@ -766,4 +766,44 @@ function network_plugin_register_internal_updates() {
 		);
 	}
 }
-add_action( 'plugins_loaded', 'network_plugin_register_internal_updates', 1 );
+add_action( 'plugins_loaded', 'ona_register_internal_updates', 1 );
+
+function ona_force_internal_update_check() {
+	if ( ! current_user_can( 'update_plugins' ) ) {
+		wp_die( 'Not allowed.' );
+	}
+
+	check_admin_referer( 'ona_force_internal_update_check' );
+
+	delete_site_transient( 'update_plugins' );
+	wp_update_plugins();
+
+	wp_safe_redirect( network_admin_url( 'update-core.php' ) );
+	exit;
+}
+add_action( 'network_admin_edit_ona_force_internal_update_check', 'ona_force_internal_update_check' );
+
+function ona_add_internal_updates_dashboard_widget() {
+	if ( ! current_user_can( 'update_plugins' ) ) {
+		return;
+	}
+
+	wp_add_dashboard_widget(
+		'ona_tools',
+		'OMEGA Network Admin Tools',
+		'ona_render_dashboard_widget'
+	);
+}
+add_action( 'wp_network_dashboard_setup', 'ona_add_internal_updates_dashboard_widget' );
+
+function ona_render_dashboard_widget() {
+	$url = wp_nonce_url(
+		network_admin_url( 'edit.php?action=ona_force_internal_update_check' ),
+		'ona_force_internal_update_check'
+	);
+	?>
+		<a class="button button-primary" href="<?php echo esc_url( $url ); ?>">Check for OMEGA plugin updates</a>
+		<p><em>Force WP to refresh update status for OMEGA internal plugins.</em></p>
+	
+	<?php
+}
