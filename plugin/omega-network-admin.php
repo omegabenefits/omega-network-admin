@@ -109,7 +109,7 @@ function omeganetwork_add_sites_column_heading( $columns ) {
 		'omega_multi_lang'	    => "Lang",
 		'omega_has_divisions'	=> "Divis",
 		'omega_archive_toggle'	=> "Arch",
-		// 'omega_chatbot'			=> "ChatBot",
+		'omega_chatbot'			=> "ChatBot",
 		'lastupdated'			=> 'Last Updated',
 		// 'blog_id'				=> 'Subsite ID',
 		// 'public'				=> 'Public',
@@ -156,6 +156,7 @@ function omeganetwork_columns_content( $column_name, $blog_id ) {
 	// for omega options
 	if ( str_contains( $column_name, "omega_" ) ) {
 		$option = get_blog_option( $blog_id, $column_name );
+		$activeplugins = get_blog_option( $blog_id, 'active_plugins', array() ); // return empty array if doesn't exist!
 		$content = "";
 		switch ( $column_name ) {
 			case "omega_system_version":
@@ -180,6 +181,9 @@ function omeganetwork_columns_content( $column_name, $blog_id ) {
 			case "omega_archive_toggle":
 				$content = ( empty( $option ) ) ? '-' : '<span class="dashicons dashicons-backup"></span>';
 			break;
+			case "omega_chatbot":
+				$content = ( in_array( 'omega-cody/omega-cody.php', $activeplugins ) ) ? '<span class="dashicons dashicons-format-chat"></span>' : '-';
+			break;
 			case "omega_last_export":
 				$content = ( empty( $option ) ) ? "-" : human_time_diff( strtotime( date( "Y-m-d H:i:s" ) ) , strtotime( $option ) ) . " ago <br />". $option;
 			break;
@@ -189,13 +193,7 @@ function omeganetwork_columns_content( $column_name, $blog_id ) {
 				$content = ( empty( $pm ) || empty( $user ) ) ? "-" : $user->display_name;
 			break;
 			case "omega_plugin":
-				switch_to_blog( $blog_id );
-				if ( in_array( "omega-system/omega-system.php", (array) get_option( 'active_plugins', array() ) ) ) {
-					$content = '<span class="dashicons dashicons-superhero-alt"></span>';
-				} else {
-					$content = "-";	
-				}
-				restore_current_blog();
+				$content = ( in_array( 'omega-system/omega-system.php', $activeplugins ) ) ? '<span class="dashicons dashicons-superhero-alt"></span>' : '-';
 			break;
 			default:
 				$content = "-";

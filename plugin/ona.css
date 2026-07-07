@@ -20,7 +20,8 @@
 
 .sites.fixed .column-omega_multi_lang,
 .sites.fixed .column-omega_has_divisions,
-.sites.fixed .column-omega_archive_toggle {
+.sites.fixed .column-omega_archive_toggle,
+.sites.fixed .column-omega_chatbot {
 	width: 36px;
 }
 
@@ -54,8 +55,12 @@
 }
 
 /* list view */
-#the-list tr td.omega_has_archive {
+#the-list tr td.omega_archive_toggle {
 	color: var(--ona-archive-icon);
+}
+
+#the-list tr td.omega_chatbot {
+	color: var(--ona-chatbot-icon);
 }
 
 #the-list tr td.omega_has_divisions {
