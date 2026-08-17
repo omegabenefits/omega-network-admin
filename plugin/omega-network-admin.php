@@ -17,9 +17,10 @@
 require_once plugin_dir_path( __FILE__ ) . "lib/plugin-update-checker/plugin-update-checker.php";
 use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 $mu_plugin_file = defined( 'ONA_MU_PLUGIN_FILE' ) ? ONA_MU_PLUGIN_FILE : '';
+$ona_plugin_file = defined( 'ONA_MU_RUNTIME_FILE' ) ? ONA_MU_RUNTIME_FILE : __FILE__;
 $MyUpdateChecker = PucFactory::buildUpdateChecker(
 	 "https://omegabenefits.net/wp-update-server/?action=get_metadata&slug=omega-network-admin", //Metadata URL.
-	 __FILE__, //Full path to the main plugin file.
+	 $ona_plugin_file, //Full path to the main plugin file.
 	 "omega-network-admin", //Plugin slug. Usually it's the same as the name of the directory.
 	 12,
 	 '',
@@ -27,11 +28,13 @@ $MyUpdateChecker = PucFactory::buildUpdateChecker(
  );
 
 add_action( 'admin_enqueue_scripts', function() {
-	wp_enqueue_style( 'ona-style', plugin_dir_url( __FILE__ ) . 'ona.css', array(), filemtime(plugin_dir_path( __FILE__ ) . 'ona.css'), 'all' );
-	wp_enqueue_script( 'ona-script', plugin_dir_url( __FILE__ ) . 'ona.js', array(), filemtime(plugin_dir_path( __FILE__ ) . 'ona.js'), 'all' );
+	$ona_plugin_file = defined( 'ONA_MU_RUNTIME_FILE' ) ? ONA_MU_RUNTIME_FILE : __FILE__;
+	wp_enqueue_style( 'ona-style', plugin_dir_url( $ona_plugin_file ) . 'ona.css', array(), filemtime(plugin_dir_path( __FILE__ ) . 'ona.css'), 'all' );
+	wp_enqueue_script( 'ona-script', plugin_dir_url( $ona_plugin_file ) . 'ona.js', array(), filemtime(plugin_dir_path( __FILE__ ) . 'ona.js'), 'all' );
 });
 add_action( 'wp_enqueue_scripts', function() {
-	wp_enqueue_style( 'ona-style', plugin_dir_url( __FILE__ ) . 'ona.css', array(), filemtime(plugin_dir_path( __FILE__ ) . 'ona.css'), 'all' );
+	$ona_plugin_file = defined( 'ONA_MU_RUNTIME_FILE' ) ? ONA_MU_RUNTIME_FILE : __FILE__;
+	wp_enqueue_style( 'ona-style', plugin_dir_url( $ona_plugin_file ) . 'ona.css', array(), filemtime(plugin_dir_path( __FILE__ ) . 'ona.css'), 'all' );
 });
 
 // force plugin update checks when on Updates page

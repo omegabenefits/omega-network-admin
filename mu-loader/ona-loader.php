@@ -16,4 +16,15 @@ defined( 'ABSPATH' ) || exit;
 // releases only replace the omega-network-admin runtime directory.
 define( 'ONA_MU_PLUGIN_FILE', basename( __FILE__ ) );
 
-require_once WPMU_PLUGIN_DIR . '/omega-network-admin/omega-network-admin.php';
+$ona_runtime_file = WPMU_PLUGIN_DIR . '/omega-network-admin/omega-network-admin.php';
+
+// Give the runtime its logical WordPress path. Its __FILE__ may resolve to the
+// target of a symlink, which is useful for local file reads but not for URLs.
+define( 'ONA_MU_RUNTIME_FILE', $ona_runtime_file );
+
+// Preserve this MU path when the runtime directory is a symlink. Without this
+// mapping, PHP resolves __FILE__ to the symlink target and asset URLs point
+// outside wp-content/mu-plugins.
+wp_register_plugin_realpath( $ona_runtime_file );
+
+require_once $ona_runtime_file;
