@@ -3,7 +3,8 @@ Contributors: somatic
 Donate link: https://omegabenefits.net
 Tags: admin
 Requires at least: 6.0
-Tested up to: 6.6
+Requires PHP: 8.0
+Tested up to: 7.0
 Stable tag: 1.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -27,6 +28,7 @@ https://omegabenefits.net/omega-template-system/
 == Changelog ==
 
 = 1.5 =
+* new Suppression filter: reads DB option and prevents 3rd-party plugins from loading on front-end render
 * add an optional must-use deployment that loads before network-activated and regular plugins
 * package the runtime in an isolated omega-network-admin directory for manual MU deployment
 * retain self-hosted update checks with a manual-deployment-only update notice

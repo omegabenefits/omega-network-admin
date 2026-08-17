@@ -6,6 +6,7 @@
  * Author: Omega Benefits
  * Author URI: https://omegabenefits.net
  * License: GPL-2.0+
+ * Requires PHP: 8.0
  */
 
 defined( 'ABSPATH' ) || exit;

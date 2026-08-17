@@ -7,6 +7,7 @@
  *  Author: Omega Benefits
  *	Author URI: https://omegabenefits.net
  *  License: GPL-2.0+
+ *  Requires PHP: 8.0
  *  Network: true
  */
 
@@ -807,4 +808,93 @@ function ona_render_dashboard_widget() {
 		<p><em>Force WP to refresh update status for OMEGA internal plugins.</em></p>
 	
 	<?php
+}
+
+/**
+ * Suppresses listed plugins on the front end of a site. FRONT END ONLY - the plugins stay fully active, load normally in wp-admin, and keep their settings.
+ *
+ * This suppresses FRONT-END RENDERING ONLY. A suppressed plugin is not deactivated and
+ * is not disabled in any general sense:
+ *
+ *   - It remains active in WordPress. `active_plugins` and `active_sitewide_plugins`
+ *     are never written, only filtered in transit on front-end requests. The database
+ *     still lists the plugin, the Plugins screen still reports Active / Network Active,
+ *     and it is indistinguishable there from any other activated plugin.
+ *   - `is_plugin_active()` returns false for it on a suppressed request because
+ *     the active-plugin lists are filtered in transit. It still returns true in
+ *     wp-admin and whenever the plugin is not suppressed.
+ *   - It loads and runs normally in wp-admin: settings screens, admin hooks, AJAX
+ *     handlers, dashboard widgets, update checks. The admin is entirely unaffected.
+ *   - Its options and settings are untouched, so it stays configured and resumes the
+ *     moment it leaves the list - no reactivation, no re-setup, no lifecycle hooks.
+ *
+ * What actually changes: on front-end requests only, the plugin file is never included,
+ * so it registers no hooks and contributes no markup, styles, or scripts to the page.
+ *
+ * OPTION CONTRACT
+ *
+ * Reads one per-site option, `omega_suppress_plugins`: a list of plugin basenames
+ * ( 'directory/file.php' ) to suppress on this site's front end.
+ *
+ *     update_option( 'omega_suppress_plugins', array(
+ *         'accessibility-plugin-onetap-pro/accessibility-plugin-onetap-pro.php',
+ *     ) );
+ *
+ * A plugin renders normally unless it is named in that list, so a missing, empty, or
+ * malformed option always falls through to "render everything". Adding a plugin to the
+ * mechanism is a change to that option, never a change to this file.
+ *
+ * This function only reads the option. Another plugin owns writing it, including whatever
+ * UI and capability checks that involves.
+ *
+ * Drop suppressed plugins from the active-plugin lists on the front end, so their files
+ * are never included: no CSS, no JS, no output, no cost.
+ *
+ * Front end only, on purpose. Anywhere plugin activation can run,
+ * activate_plugin() would read the filtered list and write it straight back, really
+ * deactivating every suppressed plugin. That rules out wp-admin and WP-CLI, and
+ * is_admin() is false under WP-CLI, so both need naming.
+ */
+
+// filter ONLY works for network-activated plugins IF we are in /mu-plugins/ scenario! (would work on per-site activations regardless)
+if ( defined( 'ONA_MU_PLUGIN_FILE' ) ) {
+	add_filter( 'option_active_plugins', 'ona_suppression_filter' );               // Per-site activation.
+	add_filter( 'site_option_active_sitewide_plugins', 'ona_suppression_filter' ); // Network activation.
+}
+
+/**
+ * @param mixed $plugins Active plugin list. Numeric list of basenames for the per-site
+ * option, keyed by basename for the network one.
+ * @return mixed
+ */
+function ona_suppression_filter( $plugins ) {
+	if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) || ! is_array( $plugins ) ) {
+		return $plugins;
+	}
+
+	$suppressed = get_option( 'omega_suppress_plugins' );
+	if ( ! is_array( $suppressed ) ) {
+		return $plugins;
+	}
+
+	foreach ( $suppressed as $basename ) {
+		// The option is written elsewhere, so treat its contents as untrusted. is_string()
+		// alone is not enough here: PHP canonicalizes a numeric string to an integer array
+		// key, so a stray '1' would make the unset() below drop whatever plugin happens to
+		// sit at index 1. Requiring core's own '.php' test closes that. No file_exists()
+		// check -- an unknown path is already a no-op below, and core validates the path
+		// for real in wp_get_active_and_valid_plugins() after this filter returns.
+		if ( ! is_string( $basename ) || ! str_ends_with( $basename, '.php' ) ) {
+			continue;
+		}
+
+		unset( $plugins[ $basename ] ); // Network shape: keyed by basename.
+
+		$found = array_search( $basename, $plugins, true ); // Per-site shape: plain list.
+		if ( false !== $found ) {
+			unset( $plugins[ $found ] );
+		}
+	}
+
+	return $plugins;
 }
