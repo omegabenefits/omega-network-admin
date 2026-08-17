@@ -4,17 +4,32 @@ Donate link: https://omegabenefits.net
 Tags: admin
 Requires at least: 6.0
 Tested up to: 6.6
-Stable tag: 1.4
+Stable tag: 1.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 For Multi-Site Networks only! Organizes site listings for easier management
+
+== Installation ==
+
+For a typical deployment, extract this release archive into `wp-content/plugins/`
+and network-activate OMEGA Network Admin.
+
+For an MU deployment, copy `mu-loader/ona-loader.php` to
+`wp-content/mu-plugins/`, then extract this archive into `wp-content/mu-plugins/`,
+producing the `omega-network-admin/` runtime directory beside the loader. The MU
+deployment is manual; do not also network-activate a copy from `wp-content/plugins/`.
 
 == Description ==
 
 https://omegabenefits.net/omega-template-system/
 
 == Changelog ==
+
+= 1.5 =
+* add an optional must-use deployment that loads before network-activated and regular plugins
+* package the runtime in an isolated omega-network-admin directory for manual MU deployment
+* retain self-hosted update checks with a manual-deployment-only update notice
 
 = 1.4 =
 * update PluginUpdateChecker lib
@@ -96,4 +111,4 @@ https://omegabenefits.net/omega-template-system/
 
 = 1.0.0 =
 * first release
-* adds columns to /wp-admin/network/sites.php to display site options 
+* adds columns to /wp-admin/network/sites.php to display site options

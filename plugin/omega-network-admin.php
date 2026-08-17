@@ -2,24 +2,27 @@
 /**
  *  Plugin Name: OMEGA Network Admin
  *	Plugin URI: https://omegabenefits.net
- *  Description: For Multi-Site Networks only! Organizes site listings for easier management
- *  Version: 1.4
+ *  Description: Required network-management tools for WordPress multisite.
+ *  Version: 1.5
  *  Author: Omega Benefits
  *	Author URI: https://omegabenefits.net
  *  License: GPL-2.0+
- *	Network: true
+ *  Network: true
  */
-
 
  /**
   * 3rd-party class for our self-hosted updates
   */
- require_once plugin_dir_path( __FILE__ ) . "lib/plugin-update-checker/plugin-update-checker.php";
- use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
- $MyUpdateChecker = PucFactory::buildUpdateChecker(
+require_once plugin_dir_path( __FILE__ ) . "lib/plugin-update-checker/plugin-update-checker.php";
+use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
+$mu_plugin_file = defined( 'ONA_MU_PLUGIN_FILE' ) ? ONA_MU_PLUGIN_FILE : '';
+$MyUpdateChecker = PucFactory::buildUpdateChecker(
 	 "https://omegabenefits.net/wp-update-server/?action=get_metadata&slug=omega-network-admin", //Metadata URL.
 	 __FILE__, //Full path to the main plugin file.
-	 "omega-network-admin" //Plugin slug. Usually it's the same as the name of the directory.
+	 "omega-network-admin", //Plugin slug. Usually it's the same as the name of the directory.
+	 12,
+	 '',
+	 $mu_plugin_file //MU loader filename, enabling an update notice (manual deployment only).
  );
 
 add_action( 'admin_enqueue_scripts', function() {

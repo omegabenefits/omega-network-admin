@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 #
-# Build a clean distribution zip of the plugin for the self-hosted update server.
+# Build a conventional plugin archive for network-plugin deployment and the
+# self-hosted update server. It can also be manually deployed as an MU runtime.
 #
-# Uses `git archive` on the installable plugin root, so the zip contains only
-# committed, tracked WordPress plugin files from that folder.
+# Uses `git archive` on the runtime directory, so the zip contains only
+# committed, tracked WordPress runtime files from that folder.
 # Because it archives a git ref, commit your release before building.
 #
-# Output: release/dist/<slug>-<version>.zip, with a top-level <slug>/ folder
-# so WordPress installs it to the right directory.
+# Output: release/dist/<slug>-<version>.zip, containing the runtime directory.
+# Extract it into wp-content/plugins/ for a typical network-plugin install. For
+# an MU deployment, manually extract it into wp-content/mu-plugins/ after the
+# separate loader has been installed.
 #
 # After building, the zip is uploaded to the wp-update-server over SFTP using the
 # connection details in release/deploy.env (gitignored; copy release/deploy.env.example).
@@ -22,8 +25,8 @@ set -euo pipefail
 
 # --- Per-plugin config -------------------------------------------------------
 # When reusing this workflow in another plugin repo, update only these values:
-# - PLUGIN_ROOT: folder containing the installable WordPress plugin files.
-# - PLUGIN_FILE: main plugin file, relative to PLUGIN_ROOT, with the `Version:` header.
+# - PLUGIN_ROOT: folder containing the ONA runtime files.
+# - PLUGIN_FILE: main runtime plugin file, relative to PLUGIN_ROOT, with the `Version:` header.
 # - SLUG: plugin directory/update slug; must match the PUC slug and update-server package slug.
 # - DEFAULT_METADATA_URL: optional version-check URL. Leave blank if this repo does not use one.
 # Keep SLUG and DEFAULT_METADATA_URL aligned with the plugin's updater class.
@@ -49,7 +52,6 @@ if [ ! -f "$PLUGIN_PATH" ]; then
 	echo "error: plugin file not found: $PLUGIN_PATH" >&2
 	exit 1
 fi
-
 VERSION="$(sed -n 's/^[[:space:]]*\*\{0,1\}[[:space:]]*Version:[[:space:]]*//p' "$PLUGIN_PATH" | head -n1 | tr -d '[:space:]')"
 if [ -z "$VERSION" ]; then
 	echo "error: could not read Version from $PLUGIN_PATH" >&2
@@ -65,11 +67,10 @@ mkdir -p release/dist
 OUT="release/dist/${SLUG}-${VERSION}.zip"
 rm -f "$OUT"
 
-if ! git cat-file -e "${REF}:${PLUGIN_ROOT}" 2>/dev/null; then
-	echo "error: $REF does not contain plugin root: $PLUGIN_ROOT" >&2
+if ! git cat-file -e "${REF}:${PLUGIN_ROOT}/${PLUGIN_FILE}" 2>/dev/null; then
+	echo "error: $REF does not contain runtime plugin file: ${PLUGIN_ROOT}/${PLUGIN_FILE}" >&2
 	exit 1
 fi
-
 git archive --format=zip --prefix="${SLUG}/" -o "$OUT" "${REF}:${PLUGIN_ROOT}"
 
 echo "Built $OUT ($(du -h "$OUT" | cut -f1))"
