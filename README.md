@@ -36,10 +36,12 @@ Do not also install or network-activate a copy from `wp-content/plugins/`.
 ## MU-only plugin suppression
 
 When ONA runs through `ona-loader.php`, the per-site `omega_suppress_plugins`
-option can list plugin basenames (for example,
-`directory/plugin.php`). Listed plugins are excluded from active-plugin lists on
-non-admin, non-WP-CLI requests, so WordPress does not load their files for that
-site. This feature is intentionally inactive in conventional network-plugin mode.
+option maps plugin basenames to a flag, for example
+`array( 'directory/plugin.php' => true )`. Basenames with a truthy value are
+excluded from active-plugin lists on non-admin, non-WP-CLI requests, so WordPress
+does not load their files for that site. Writers add and remove entries with
+`$opt[ $file ] = true` and `unset( $opt[ $file ] )`. This feature is intentionally
+inactive in conventional network-plugin mode.
 
 ## Releasing
 

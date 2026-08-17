@@ -836,16 +836,21 @@ function ona_render_dashboard_widget() {
  *
  * OPTION CONTRACT
  *
- * Reads one per-site option, `omega_suppress_plugins`: a list of plugin basenames
- * ( 'directory/file.php' ) to suppress on this site's front end.
+ * Reads one per-site option, `omega_suppress_plugins`: a map keyed by plugin basename
+ * ( 'directory/file.php' ), where a truthy value means suppress on this site's front end.
  *
  *     update_option( 'omega_suppress_plugins', array(
- *         'accessibility-plugin-onetap-pro/accessibility-plugin-onetap-pro.php',
+ *         'accessibility-plugin-onetap-pro/accessibility-plugin-onetap-pro.php' => true,
  *     ) );
  *
- * A plugin renders normally unless it is named in that list, so a missing, empty, or
- * malformed option always falls through to "render everything". Adding a plugin to the
- * mechanism is a change to that option, never a change to this file.
+ * Keyed rather than a plain list so writers can add and remove with `$opt[ $file ] = true`
+ * and `unset( $opt[ $file ] )`, which cannot produce duplicates. Both an absent key and a
+ * falsey value mean "render normally", so removing an entry and setting it false are
+ * equally valid ways to stop suppressing.
+ *
+ * A plugin renders normally unless it is keyed here with a truthy value, so a missing,
+ * empty, or malformed option always falls through to "render everything". Adding a plugin
+ * to the mechanism is a change to that option, never a change to this file.
  *
  * This function only reads the option. Another plugin owns writing it, including whatever
  * UI and capability checks that involves.
@@ -880,14 +885,16 @@ function ona_suppression_filter( $plugins ) {
 		return $plugins;
 	}
 
-	foreach ( $suppressed as $basename ) {
+	foreach ( $suppressed as $basename => $is_suppressed ) {
 		// The option is written elsewhere, so treat its contents as untrusted. is_string()
 		// alone is not enough here: PHP canonicalizes a numeric string to an integer array
 		// key, so a stray '1' would make the unset() below drop whatever plugin happens to
-		// sit at index 1. Requiring core's own '.php' test closes that. No file_exists()
-		// check -- an unknown path is already a no-op below, and core validates the path
-		// for real in wp_get_active_and_valid_plugins() after this filter returns.
-		if ( ! is_string( $basename ) || ! str_ends_with( $basename, '.php' ) ) {
+		// sit at index 1. Requiring core's own '.php' test closes that. It also rejects a
+		// plain list left over from the old option shape, whose keys are integers. No
+		// file_exists() check -- an unknown path is already a no-op below, and core
+		// validates the path for real in wp_get_active_and_valid_plugins() after this
+		// filter returns.
+		if ( ! $is_suppressed || ! is_string( $basename ) || ! str_ends_with( $basename, '.php' ) ) {
 			continue;
 		}
 
