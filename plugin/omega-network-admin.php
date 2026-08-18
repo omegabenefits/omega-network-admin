@@ -3,7 +3,7 @@
  *  Plugin Name: OMEGA Network Admin
  *	Plugin URI: https://omegabenefits.net
  *  Description: Required network-management tools for WordPress multisite.
- *  Version: 1.5.1
+ *  Version: 1.5.2
  *  Author: Omega Benefits
  *	Author URI: https://omegabenefits.net
  *  License: GPL-2.0+
@@ -15,6 +15,12 @@
   * 3rd-party class for our self-hosted updates
   */
 require_once plugin_dir_path( __FILE__ ) . "lib/plugin-update-checker/plugin-update-checker.php";
+
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-omega-network-admin-site-all-command.php';
+	WP_CLI::add_command( 'site all', array( 'OMEGA_Network_Admin_Site_All_Command', 'run' ) );
+}
+
 use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 $mu_plugin_file = defined( 'ONA_MU_PLUGIN_FILE' ) ? ONA_MU_PLUGIN_FILE : '';
 $ona_plugin_file = defined( 'ONA_MU_RUNTIME_FILE' ) ? ONA_MU_RUNTIME_FILE : __FILE__;

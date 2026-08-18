@@ -33,6 +33,45 @@ manual file replacement.
 
 Do not also install or network-activate a copy from `wp-content/plugins/`.
 
+## WP-CLI network runner
+
+When WP-CLI loads ONA, `wp site all <command> [args...]` runs one fresh
+WP-CLI process for every URL from `wp site list --field=url`, in the same order.
+The runner forces each process to its matching `--url`, even when the caller
+supplies a different URL. It emits each child command's output unchanged,
+preserving terminal formatting unless `--no-color` was requested. It keeps
+running after a site failure and exits non-zero after the final site has been
+processed.
+
+```sh
+wp site all plugin status
+wp site all option update my_option value
+wp site all my-plugin reindex --dry-run
+```
+
+`wp site all site all ...` is rejected to prevent recursive process creation.
+
+### Manual verification
+
+Run this only on a disposable multisite test network with at least three sites.
+First note the expected URL order, then verify argument forwarding, per-site
+targeting, and cleanup:
+
+```sh
+wp site list --field=url
+wp site all option update ona_site_all_verification ok
+wp site all option get ona_site_all_verification --format=json
+wp site all option delete ona_site_all_verification
+```
+
+Then verify that a failure does not stop later sites. Site ID `2` fails, all
+other sites complete (including the third site), and the final command exits
+non-zero:
+
+```sh
+wp site all eval 'exit( 2 === (int) get_current_blog_id() ? 1 : 0 );'
+```
+
 ## MU-only plugin suppression
 
 When ONA runs through `ona-loader.php`, the per-site `omega_suppress_plugins`
