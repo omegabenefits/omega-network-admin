@@ -33,6 +33,23 @@ manual file replacement.
 
 Do not also install or network-activate a copy from `wp-content/plugins/`.
 
+### Redirect public signup and unknown subdomains
+
+WordPress performs Multisite site lookup before it loads either regular,
+network-activated, or must-use plugins. As a result, its default redirect for an
+unknown subdomain must be configured in `wp-config.php`.
+
+Add this before the `wp-settings.php` include:
+
+```php
+define( 'NOBLOGREDIRECT', '%siteurl%' );
+```
+
+`%siteurl%` is WordPress's built-in placeholder for the network main site, so it
+avoids hard-coding an environment-specific hostname. This configuration redirects
+unknown sites to the network main site instead of `wp-signup.php`. ONA redirects
+direct `/wp-signup.php` requests there too, before the signup screen can render.
+
 ## WP-CLI network runner
 
 When WP-CLI loads ONA, `wp site all <command> [args...]` runs one fresh

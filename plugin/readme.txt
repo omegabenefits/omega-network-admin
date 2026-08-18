@@ -5,7 +5,7 @@ Tags: admin
 Requires at least: 6.0
 Requires PHP: 8.0
 Tested up to: 7.0
-Stable tag: 1.5.2
+Stable tag: 1.5.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -21,11 +21,29 @@ For an MU deployment, copy `mu-loader/ona-loader.php` to
 producing the `omega-network-admin/` runtime directory beside the loader. The MU
 deployment is manual; do not also network-activate a copy from `wp-content/plugins/`.
 
+### Redirect public signup and unknown subdomains
+
+WordPress identifies an unknown subdomain before it loads any plugin. Add the
+following to `wp-config.php` before the `wp-settings.php` include to redirect
+those requests to the network's main site instead of `wp-signup.php`:
+
+```
+define( 'NOBLOGREDIRECT', '%siteurl%' );
+```
+
+The `%siteurl%` value is WordPress's built-in placeholder for the network's main
+site URL, so the same configuration works across environments. ONA redirects
+direct requests to `wp-signup.php` to that same URL before the signup screen can
+render.
+
 == Description ==
 
 https://omegabenefits.net/omega-template-system/
 
 == Changelog ==
+
+= 1.5.3 =
+* Redirect unknown Multisite subdomains and direct public signup requests to the network main site (never show signup page).
 
 = 1.5.2 =
 * new custom CLI command "wp site all XXX" executes a command across all sites in the network sequentially

@@ -3,7 +3,7 @@
  *  Plugin Name: OMEGA Network Admin
  *	Plugin URI: https://omegabenefits.net
  *  Description: Required network-management tools for WordPress multisite.
- *  Version: 1.5.2
+ *  Version: 1.5.3
  *  Author: Omega Benefits
  *	Author URI: https://omegabenefits.net
  *  License: GPL-2.0+
@@ -32,6 +32,22 @@ $MyUpdateChecker = PucFactory::buildUpdateChecker(
 	 '',
 	 $mu_plugin_file //MU loader filename, enabling an update notice (manual deployment only).
  );
+
+/**
+ * Redirect the disabled public Multisite signup endpoint before it can render.
+ *
+ * NOBLOGREDIRECT in wp-config.php handles unknown subdomains, which happen
+ * before WordPress can load this network plugin.
+ */
+function ona_redirect_public_signup() {
+	if ( 'wp-signup.php' !== basename( (string) ( $_SERVER['SCRIPT_NAME'] ?? '' ) ) ) {
+		return;
+	}
+
+	wp_safe_redirect( network_home_url(), 302 );
+	exit;
+}
+add_action( 'plugins_loaded', 'ona_redirect_public_signup', 1 );
 
 add_action( 'admin_enqueue_scripts', function() {
 	$ona_plugin_file = defined( 'ONA_MU_RUNTIME_FILE' ) ? ONA_MU_RUNTIME_FILE : __FILE__;
