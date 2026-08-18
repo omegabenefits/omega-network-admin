@@ -187,7 +187,7 @@ function omeganetwork_columns_content( $column_name, $blog_id ) {
 				$content = ( empty( $option ) ) ? '-' : '<span class="dashicons dashicons-groups"></span>';
 			break;
 			case "omega_has_onetap":
-				$content = ( ona_has_onetap( $blog_id ) ) ? '-' : '<span class="dashicons dashicons-universal-access-alt"></span>';
+				$content = ( ! ona_has_onetap( $blog_id ) ) ? '-' : '<span class="dashicons dashicons-universal-access-alt"></span>';
 			break;
 			case "omega_archive_toggle":
 				$content = ( empty( $option ) ) ? '-' : '<span class="dashicons dashicons-backup"></span>';
