@@ -9,6 +9,8 @@
 	--ona-lang-bkg: #e8fbf0;
 	--ona-groups-icon: #4f1dc3;
 	--ona-groups-bkg: #eeecff;
+	--ona-onetap-icon: #0d4ad8;
+	--ona-onetap-bkg: #e2eff9;
 	--ona-archive-icon: #942300;
 	--ona-chatbot-icon: #eb00c9;
 }
@@ -20,9 +22,10 @@
 
 .sites.fixed .column-omega_multi_lang,
 .sites.fixed .column-omega_has_divisions,
+.sites.fixed .column-omega_has_onetap,
 .sites.fixed .column-omega_archive_toggle,
 .sites.fixed .column-omega_chatbot {
-	width: 36px;
+	width: 54px;
 }
 
 .sites.fixed .column-omega_plugin {
@@ -69,6 +72,14 @@
 
 #the-list tr:has(.dashicons-groups) {
 	background-color: var(--ona-groups-bkg);
+}
+
+#the-list tr td.omega_has_onetap {
+	color: var(--ona-onetap-icon);
+}
+
+#the-list tr:has(.dashicons-universal-access-alt) {
+	background-color: var(--ona-onetap-bkg);
 }
 
 #the-list tr td.omega_multi_lang {
@@ -214,6 +225,13 @@
 	color: var(--ona-groups-icon);
 }
 
+#myblogs .my-sites .onetap {
+	position: absolute;
+	right: 20px;
+	top: 248px;
+	color: var(--ona-onetap-icon);
+}
+
 #myblogs .my-sites .archive {
 	position: absolute;
 	right: 20px;
@@ -243,6 +261,10 @@
 	background: var(--ona-groups-bkg);
 }
 
+#myblogs ul.my-sites li:has(.onetap) {
+	background: var(--ona-onetap-bkg);
+}
+
 #myblogs ul.my-sites li:has(.lang) {
 	background: var(--ona-lang-bkg);
 }
@@ -255,8 +277,9 @@
 #myblogs .my-sites li:hover,
 #myblogs ul.my-sites li:has(.lang):hover,
 #myblogs ul.my-sites li:has(.divisions):hover,
+#myblogs ul.my-sites li:has(.onetap):hover,
 #myblogs ul.my-sites li:has(.preview):hover {
-	background: #e2eff9;
+	background: #eeecff;
 	transition: background-color 0.2s ease;
 }
 

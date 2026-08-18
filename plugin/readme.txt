@@ -5,7 +5,7 @@ Tags: admin
 Requires at least: 6.0
 Requires PHP: 8.0
 Tested up to: 7.0
-Stable tag: 1.5
+Stable tag: 1.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,6 +26,9 @@ deployment is manual; do not also network-activate a copy from `wp-content/plugi
 https://omegabenefits.net/omega-template-system/
 
 == Changelog ==
+
+= 1.5.1 =
+* OneTap Accessibility widget status icon
 
 = 1.5 =
 * new Suppression filter: reads DB option and prevents 3rd-party plugins from loading on front-end render

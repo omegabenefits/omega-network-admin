@@ -3,7 +3,7 @@
  *  Plugin Name: OMEGA Network Admin
  *	Plugin URI: https://omegabenefits.net
  *  Description: Required network-management tools for WordPress multisite.
- *  Version: 1.5
+ *  Version: 1.5.1
  *  Author: Omega Benefits
  *	Author URI: https://omegabenefits.net
  *  License: GPL-2.0+
@@ -115,6 +115,7 @@ function omeganetwork_add_sites_column_heading( $columns ) {
 		'omega_topbar_enable'	=> "Preview",
 		'omega_multi_lang'	    => "Lang",
 		'omega_has_divisions'	=> "Divis",
+		'omega_has_onetap'		=> "OneTap",
 		'omega_archive_toggle'	=> "Arch",
 		'omega_chatbot'			=> "ChatBot",
 		'lastupdated'			=> 'Last Updated',
@@ -184,6 +185,9 @@ function omeganetwork_columns_content( $column_name, $blog_id ) {
 			break;
 			case "omega_has_divisions":
 				$content = ( empty( $option ) ) ? '-' : '<span class="dashicons dashicons-groups"></span>';
+			break;
+			case "omega_has_onetap":
+				$content = ( ona_has_onetap( $blog_id ) ) ? '-' : '<span class="dashicons dashicons-universal-access-alt"></span>';
 			break;
 			case "omega_archive_toggle":
 				$content = ( empty( $option ) ) ? '-' : '<span class="dashicons dashicons-backup"></span>';
@@ -258,6 +262,7 @@ function ona_sort_my_sites_tiles($blogs) {
 		$blog->preview = get_blog_option( $blog->userblog_id, 'omega_topbar_enable' );
 		$blog->lang = get_blog_option( $blog->userblog_id, 'omega_multi_lang' );
 		$blog->divisions = get_blog_option( $blog->userblog_id, 'omega_has_divisions' );
+		$blog->onetap = ona_has_onetap( $blog->userblog_id );
 		$blog->year = get_blog_option( $blog->userblog_id, 'omega_current_year' );
 		$blog->archive = get_blog_option( $blog->userblog_id, 'omega_archive_toggle' );
 		$blog->exporterrors = get_blog_option( $blog->userblog_id, 'omega_export_404s' );
@@ -293,6 +298,9 @@ function ona_sort_my_sites_tiles($blogs) {
 				break;
 				case "current":
 					if ( wp_validate_boolean( $blog->preview ) ) unset( $extblogs[$blog_id] );
+					break;
+				case "onetap":
+					if ( !wp_validate_boolean( $blog->onetap ) ) unset( $extblogs[$blog_id] );
 					break;
 				case "errors":
 					if ( !wp_validate_boolean( $blog->exporterrors ) && !wp_validate_boolean( $blog->redirecterrors ) ) unset( $extblogs[$blog_id] );
@@ -451,6 +459,10 @@ function ona_site_meta( $settings_html, $blog_obj ) {
 		// show icon if has any divisions
 		if ( get_blog_option( $blog_obj->userblog_id, 'omega_has_divisions' ) ) {
 			$html .= "<span class='divisions dashicons dashicons-groups'></span>";
+		}
+		// show icon if has any divisions
+		if ( ona_has_onetap( $blog_obj->userblog_id ) ) {
+			$html .= "<span class='onetap dashicons dashicons-universal-access-alt'></span>";
 		}
 		// show icon if archive active
 		if ( get_blog_option( $blog_obj->userblog_id, 'omega_archive_toggle' ) ) {
@@ -654,6 +666,8 @@ add_action( 'myblogs_allblogs_options', function() {
 	
 	echo "<a class='button button-secondary filterby' href='".add_query_arg( 'filterby', 'chatbot' )."' ".selected( $filterby, "chatbot", false ).">Filter by <span>ChatBot</span></a>";
 	
+	echo "<a class='button button-secondary filterby' href='".add_query_arg( 'filterby', 'onetap' )."' ".selected( $filterby, "onetap", false ).">Filter by <span>OneTap</span></a>";
+	
 	echo "<a class='button button-secondary clearfilter' href='".remove_query_arg( 'filterby' )."'>Clear Filter</a>";
 	
 	?>
@@ -691,7 +705,7 @@ function export_sites_csv() {
 	if ( empty( $blogs ) || !is_array( $blogs ) ) return;
 	array_shift( $blogs ); // remove primary network site
 	$data = [];
-	$data[] = [ "BlogID","ClientName","ClientID","TLD","StagingDomain","PublicDomain","PM","Language","Divisions" ];
+	$data[] = [ "BlogID","ClientName","ClientID","TLD","StagingDomain","PublicDomain","PM","Language","Divisions","OneTap" ];
 	foreach ( $blogs as $blog ) {
 		$line = [];
 		$line[] = $blog->blog_id;
@@ -705,7 +719,7 @@ function export_sites_csv() {
 		$line[] = ( empty( $pm ) || empty( $user ) ) ? "-" : $user->display_name;
 		$line[] = get_blog_option( $blog->blog_id, 'omega_multi_lang' );
 		$line[] = get_blog_option( $blog->blog_id, 'omega_has_divisions' );
-		
+		$line[] = ona_has_onetap( $blog->blog_id );
 		$data[] = $line;
 	}
 // ray($data);
@@ -907,4 +921,12 @@ function ona_suppression_filter( $plugins ) {
 	}
 
 	return $plugins;
+}
+
+function ona_has_onetap( string $blog_id = "" ): bool {
+	if ( empty( $blog_id ) ) return false;
+	$suppressed = get_blog_option( $blog_id, 'omega_suppress_plugins', array() );
+	if ( empty( $suppressed ) ) return true;
+	$active = in_array( 'accessibility-plugin-onetap-pro/accessibility-plugin-onetap-pro.php', $suppressed ) ? false : true;
+	return $active;
 }
