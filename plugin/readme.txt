@@ -42,6 +42,9 @@ https://omegabenefits.net/omega-template-system/
 
 == Changelog ==
 
+= 1.5.4 =
+* Show new metadata and allow sorting by Benefits Start Date
+
 = 1.5.3 =
 * Redirect unknown Multisite subdomains and direct public signup requests to the network main site (never show signup page).
 

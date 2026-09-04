@@ -134,6 +134,7 @@ function omeganetwork_add_sites_column_heading( $columns ) {
 		'omega_projectmanager' 	=> 'PM',
 		'omega_system_version' 	=> 'System',
 		'omega_last_export'		=> 'Last Static Export',
+		'omega_effective_start'	=> 'Benefits Start',
 		'omega_topbar_enable'	=> "Preview",
 		'omega_multi_lang'	    => "Lang",
 		'omega_has_divisions'	=> "Divis",
@@ -166,6 +167,7 @@ function omeganetwork_columns_sortable( $sortable_columns ) {
 	);
 	$sortable_columns['omega_last_export']   = 'omega_last_export';
 	$sortable_columns['omega_system_version']   = 'omega_system_version';
+	$sortable_columns['omega_effective_start']   = 'omega_effective_start';
 	// $sortable_columns['blog_id']  = 'blog_id';
 	// $sortable_columns['public']   = 'public';
 	// $sortable_columns['deleted']  = 'deleted';
@@ -219,6 +221,12 @@ function omeganetwork_columns_content( $column_name, $blog_id ) {
 			break;
 			case "omega_last_export":
 				$content = ( empty( $option ) ) ? "-" : human_time_diff( strtotime( date( "Y-m-d H:i:s" ) ) , strtotime( $option ) ) . " ago <br />". $option;
+			break;
+			case "omega_effective_start":
+				$day = get_blog_option( $blog_id, 'omega_effective_day' );
+				$month = get_blog_option( $blog_id, 'omega_effective_month' );
+				$time = strtotime( "2026-".$month."-".$day);
+				$content = date( "F j", $time );
 			break;
 			case "omega_projectmanager":
 				$pm = get_blog_option( $blog_id, 'omega_projectmanager');
@@ -287,6 +295,7 @@ function ona_sort_my_sites_tiles($blogs) {
 		$blog->onetap = ona_has_onetap( $blog->userblog_id );
 		$blog->year = get_blog_option( $blog->userblog_id, 'omega_current_year' );
 		$blog->archive = get_blog_option( $blog->userblog_id, 'omega_archive_toggle' );
+		$blog->startdate = get_blog_option( $blog->userblog_id, 'omega_effective_month' ) . "." . get_blog_option( $blog->userblog_id, 'omega_effective_day' );
 		$blog->exporterrors = get_blog_option( $blog->userblog_id, 'omega_export_404s' );
 		$blog->redirecterrors = get_blog_option( $blog->userblog_id, 'omega_redirect_fails' );		
 		$activeplugins = get_blog_option( $blog->userblog_id, 'active_plugins', array() ); // return empty array if doesn't exist!
@@ -351,6 +360,14 @@ function ona_sort_my_sites_tiles($blogs) {
 	if ( $sortby == 'omega_system_version' ) {
 		usort( $extblogs, function( $a, $b ) {
 			return floatval( $b->system ) <=> floatval( $a->system );
+		});
+		return $extblogs; // replace with our sort
+	}
+	
+	// sort by BENEFITS START DATE
+	if ( $sortby == 'omega_effective_start' ) {
+		usort( $extblogs, function( $a, $b ) {
+			return floatval( $a->startdate ) <=> floatval( $b->startdate );  // order Jan > Dec
 		});
 		return $extblogs; // replace with our sort
 	}
@@ -523,16 +540,26 @@ function ona_site_meta( $settings_html, $blog_obj ) {
 		$html .= ( empty( $lastexport ) ) ? "- <br /><br />" : human_time_diff( strtotime( date( "Y-m-d H:i:s" ) ) , strtotime( $lastexport ) ) . " ago <br />";
 		$html .= "</p>";
 		
+		
+		$day = get_blog_option( $blog_obj->userblog_id, 'omega_effective_day' );
+		$month = get_blog_option( $blog_obj->userblog_id, 'omega_effective_month' );
+		$time = strtotime( "2026-".$month."-".$day);
+		
+		$html .= "<p class='effective'>";
+		$html .= "<span class='label'>Benefits Start</span>";
+		$html .= ( empty( $month ) ) ? "-" : date( "F j", $time );
+		$html .= "</p>";
+		
 		// warning flags
 		if ( $errors ) $html .= "<a class='flags errors' href='".$blog_obj->siteurl."/wp-admin/'>404 Errors &nbsp;<span class='dashicons dashicons-warning'></span></a>";
 		if ( $fails ) $html .= "<a class='flags fails' href='".$blog_obj->siteurl."/wp-admin/'>Redirect Fails &nbsp;<span class='dashicons dashicons-warning'></span></a>";
 		
-		$netlify_id = get_blog_option( $blog_obj->userblog_id, 'omega_netlify_id' );
-		if ( $netlify_id ) {
-			$html .= "<p class='netlify'>";
-			$html .= '<a class="nounderline" target="_blank" href="https://app.netlify.com/sites/omega-'.$client_id.'/deploys"><img src="https://api.netlify.com/api/v1/badges/'.$netlify_id.'/deploy-status" /></a>';
-			$html .= "</p>";
-		}
+		// $netlify_id = get_blog_option( $blog_obj->userblog_id, 'omega_netlify_id' );
+		// if ( $netlify_id ) {
+		// 	$html .= "<p class='netlify'>";
+		// 	$html .= '<a class="nounderline" target="_blank" href="https://app.netlify.com/sites/omega-'.$client_id.'/deploys"><img src="https://api.netlify.com/api/v1/badges/'.$netlify_id.'/deploy-status" /></a>';
+		// 	$html .= "</p>";
+		// }
 		
 		return $html;
 	}
@@ -704,6 +731,8 @@ add_action( 'myblogs_allblogs_options', function() {
 	echo "<a class='button button-secondary sortby' href='".add_query_arg( 'sortby', 'lastupdated' )."' ".selected( $sortby, "lastupdated", false ).">Sort by <span>Last Updated</span></a>";
 	
 	echo "<a class='button button-secondary sortby' href='".add_query_arg( 'sortby', 'omega_last_export' )."' ".selected( $sortby, "omega_last_export", false ).">Sort by <span>Last Export</span></a>";
+	
+	echo "<a class='button button-secondary sortby' href='".add_query_arg( 'sortby', 'omega_effective_start' )."' ".selected( $sortby, "omega_effective_start", false ).">Sort by <span>Benefits Start</span></a>";
 	
 	echo "<a class='button button-secondary sortby' href='".add_query_arg( 'sortby', 'projectmanager' )."' ".selected( $sortby, "projectmanager", false ).">Sort by <span>PM</span></a>";
 	

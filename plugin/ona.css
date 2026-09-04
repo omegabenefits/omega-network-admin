@@ -44,6 +44,10 @@
 	width: 160px;
 }
 
+.sites.fixed .column-omega_effective_start {
+	width: 160px;
+}
+
 .sites.fixed .column-users {
 	width: 40px;
 }
@@ -330,7 +334,8 @@
 	color: #777;
 }
 
-#myblogs .lastexport {
+#myblogs .lastexport,
+#myblogs .effective {
 	margin-top: 6px;
 	margin-bottom: 0;
 }
@@ -346,7 +351,8 @@
 	border: none;
 }
 
-#myblogs .lastexport .label {
+#myblogs .lastexport .label,
+#myblogs .effective .label {
 	display: block;
 	text-transform: uppercase;
 	font-size: 10px;
