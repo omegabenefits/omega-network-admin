@@ -551,8 +551,8 @@ function ona_site_meta( $settings_html, $blog_obj ) {
 		$html .= "</p>";
 		
 		// warning flags
-		if ( $errors ) $html .= "<a class='flags errors' href='".$blog_obj->siteurl."/wp-admin/'>404 Errors &nbsp;<span class='dashicons dashicons-warning'></span></a>";
-		if ( $fails ) $html .= "<a class='flags fails' href='".$blog_obj->siteurl."/wp-admin/'>Redirect Fails &nbsp;<span class='dashicons dashicons-warning'></span></a>";
+		if ( $errors ) $html .= "<a class='flags errors' href='".$blog_obj->siteurl."/wp-admin/admin.php?page=system-exports'>404 Errors &nbsp;<span class='dashicons dashicons-warning'></span></a>";
+		if ( $fails ) $html .= "<a class='flags fails' href='".$blog_obj->siteurl."/wp-admin/admin.php?page=system-dashboard'>Redirect Fails &nbsp;<span class='dashicons dashicons-warning'></span></a>";
 		
 		// $netlify_id = get_blog_option( $blog_obj->userblog_id, 'omega_netlify_id' );
 		// if ( $netlify_id ) {
