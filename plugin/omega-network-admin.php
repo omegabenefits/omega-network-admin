@@ -23,6 +23,17 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 
 use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 
+// The permanent MU loader has no version header; display the runtime version.
+add_filter( 'plugin_row_meta', function( array $meta, string $file ): array {
+	if ( defined( 'ONA_MU_PLUGIN_FILE' ) && $file === ONA_MU_PLUGIN_FILE ) {
+		$data = get_file_data( __FILE__, array( 'Version' => 'Version' ) );
+		if ( $data['Version'] !== '' ) {
+			array_unshift( $meta, sprintf( __( 'Version %s' ), esc_html( $data['Version'] ) ) );
+		}
+	}
+	return $meta;
+}, 10, 2 );
+
 /**
  * Redirect the disabled public Multisite signup endpoint before it can render.
  *
