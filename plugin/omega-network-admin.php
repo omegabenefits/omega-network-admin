@@ -12,7 +12,7 @@
  */
 
  /**
-  * 3rd-party class for our self-hosted updates
+  * Update checks for the other Omega plugins. Network Admin is deployed manually.
   */
 require_once plugin_dir_path( __FILE__ ) . "lib/plugin-update-checker/plugin-update-checker.php";
 
@@ -22,16 +22,6 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 }
 
 use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
-$mu_plugin_file = defined( 'ONA_MU_PLUGIN_FILE' ) ? ONA_MU_PLUGIN_FILE : '';
-$ona_plugin_file = defined( 'ONA_MU_RUNTIME_FILE' ) ? ONA_MU_RUNTIME_FILE : __FILE__;
-$MyUpdateChecker = PucFactory::buildUpdateChecker(
-	 "https://omegabenefits.net/wp-update-server/?action=get_metadata&slug=omega-network-admin", //Metadata URL.
-	 $ona_plugin_file, //Full path to the main plugin file.
-	 "omega-network-admin", //Plugin slug. Usually it's the same as the name of the directory.
-	 12,
-	 '',
-	 $mu_plugin_file //MU loader filename, enabling an update notice (manual deployment only).
- );
 
 /**
  * Redirect the disabled public Multisite signup endpoint before it can render.
